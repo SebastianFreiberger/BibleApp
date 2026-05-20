@@ -1,0 +1,86 @@
+// Configuracion de APIs por idioma
+export const API_CONFIG = {
+  es: {
+    name: 'Español',
+    translation: 'RV1960',
+    credit: 'Reina Valera 1960 • bolls.life'
+  },
+  en: {
+    name: 'English',
+    translation: 'WEB',
+    credit: 'World English Bible • bible-api.com'
+  }
+}
+
+// Mapeo completo de los 66 libros de la Biblia
+// Clave: nombre normalizado (sin tildes, minúsculas) -> { id: bookId para bolls.life, en: nombre en inglés }
+export const BOOK_DATA = {
+  // Antiguo Testamento
+  'genesis': { id: 1, en: 'Genesis' },
+  'exodo': { id: 2, en: 'Exodus' },
+  'levitico': { id: 3, en: 'Leviticus' },
+  'numeros': { id: 4, en: 'Numbers' },
+  'deuteronomio': { id: 5, en: 'Deuteronomy' },
+  'josue': { id: 6, en: 'Joshua' },
+  'jueces': { id: 7, en: 'Judges' },
+  'rut': { id: 8, en: 'Ruth' },
+  '1 samuel': { id: 9, en: '1 Samuel' },
+  '2 samuel': { id: 10, en: '2 Samuel' },
+  '1 reyes': { id: 11, en: '1 Kings' },
+  '2 reyes': { id: 12, en: '2 Kings' },
+  '1 cronicas': { id: 13, en: '1 Chronicles' },
+  '2 cronicas': { id: 14, en: '2 Chronicles' },
+  'esdras': { id: 15, en: 'Ezra' },
+  'nehemias': { id: 16, en: 'Nehemiah' },
+  'ester': { id: 17, en: 'Esther' },
+  'job': { id: 18, en: 'Job' },
+  'salmos': { id: 19, en: 'Psalms' },
+  'proverbios': { id: 20, en: 'Proverbs' },
+  'eclesiastes': { id: 21, en: 'Ecclesiastes' },
+  'cantares': { id: 22, en: 'Song of Solomon' },
+  'isaias': { id: 23, en: 'Isaiah' },
+  'jeremias': { id: 24, en: 'Jeremiah' },
+  'lamentaciones': { id: 25, en: 'Lamentations' },
+  'ezequiel': { id: 26, en: 'Ezekiel' },
+  'daniel': { id: 27, en: 'Daniel' },
+  'oseas': { id: 28, en: 'Hosea' },
+  'joel': { id: 29, en: 'Joel' },
+  'amos': { id: 30, en: 'Amos' },
+  'abdias': { id: 31, en: 'Obadiah' },
+  'jonas': { id: 32, en: 'Jonah' },
+  'miqueas': { id: 33, en: 'Micah' },
+  'nahum': { id: 34, en: 'Nahum' },
+  'habacuc': { id: 35, en: 'Habakkuk' },
+  'sofonias': { id: 36, en: 'Zephaniah' },
+  'hageo': { id: 37, en: 'Haggai' },
+  'zacarias': { id: 38, en: 'Zechariah' },
+  'malaquias': { id: 39, en: 'Malachi' },
+  // Nuevo Testamento
+  'mateo': { id: 40, en: 'Matthew' },
+  'marcos': { id: 41, en: 'Mark' },
+  'lucas': { id: 42, en: 'Luke' },
+  'juan': { id: 43, en: 'John' },
+  'hechos': { id: 44, en: 'Acts' },
+  'romanos': { id: 45, en: 'Romans' },
+  '1 corintios': { id: 46, en: '1 Corinthians' },
+  '2 corintios': { id: 47, en: '2 Corinthians' },
+  'galatas': { id: 48, en: 'Galatians' },
+  'efesios': { id: 49, en: 'Ephesians' },
+  'filipenses': { id: 50, en: 'Philippians' },
+  'colosenses': { id: 51, en: 'Colossians' },
+  '1 tesalonicenses': { id: 52, en: '1 Thessalonians' },
+  '2 tesalonicenses': { id: 53, en: '2 Thessalonians' },
+  '1 timoteo': { id: 54, en: '1 Timothy' },
+  '2 timoteo': { id: 55, en: '2 Timothy' },
+  'tito': { id: 56, en: 'Titus' },
+  'filemon': { id: 57, en: 'Philemon' },
+  'hebreos': { id: 58, en: 'Hebrews' },
+  'santiago': { id: 59, en: 'James' },
+  '1 pedro': { id: 60, en: '1 Peter' },
+  '2 pedro': { id: 61, en: '2 Peter' },
+  '1 juan': { id: 62, en: '1 John' },
+  '2 juan': { id: 63, en: '2 John' },
+  '3 juan': { id: 64, en: '3 John' },
+  'judas': { id: 65, en: 'Jude' },
+  'apocalipsis': { id: 66, en: 'Revelation' }
+}

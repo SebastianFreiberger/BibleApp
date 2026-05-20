@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Tema Claro - Fondo luminoso con gradiente suave */
+[data-theme="light"] {
+  color: #2d3748;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 50%, #e8f0fe 100%);
+}
+
+/* Tema Oscuro - Fondo profundo espacial */
+[data-theme="dark"] {
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 50%, #24243e 100%);
+}
