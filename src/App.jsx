@@ -1,7 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context'
-import { LoginPage, RegisterPage, HomePage, AttributesPage } from './pages'
+import { AuthProvider, useAuth, LangProvider } from './context'
+import { LandingPage, LoginPage, RegisterPage, HomePage, AttributesPage, BiblePage, ProfilePage, SearchPage } from './pages'
 import './App.css'
+
+function RootRoute() {
+  const { isAuthenticated, loading } = useAuth()
+  if (loading) return <div className="loading-screen"><div className="spinner" /></div>
+  return isAuthenticated ? <HomePage /> : <LandingPage />
+}
 
 // Componente para rutas de auth (redirige a home si ya está logueado)
 function AuthRoute({ children }) {
@@ -37,7 +43,10 @@ function AppRoutes() {
           </AuthRoute>
         } 
       />
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<RootRoute />} />
+      <Route path="/biblia" element={<BiblePage />} />
+      <Route path="/busqueda" element={<SearchPage />} />
+      <Route path="/perfil" element={<ProfilePage />} />
       <Route path="/attributes" element={<AttributesPage />} />
     </Routes>
   )
@@ -46,9 +55,11 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <LangProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </LangProvider>
     </BrowserRouter>
   )
 }

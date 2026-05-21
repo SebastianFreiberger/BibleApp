@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { getAllAttributes } from '../data'
+import { Link } from 'react-router-dom'
+import { getAllAttributes, UI_TEXT } from '../data'
 import { useAttributeVerse } from '../hooks'
+import { useLang } from '../context'
+import { Footer } from '../components'
 import {
   ArrowLeft, Crown, Shield, Heart, Sparkles, Scale, Zap, Globe, Gift,
   HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
@@ -18,44 +20,25 @@ const ICONS = {
 }
 
 export function AttributesPage() {
-  const [searchParams] = useSearchParams()
-  const lang = searchParams.get('lang') || 'es'
+  const { lang, bibleVersion } = useLang()
   const [selectedAttribute, setSelectedAttribute] = useState(null)
   const { loading, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo } = useAttributeVerse()
 
   const attributes = getAllAttributes(lang)
 
-  const texts = {
-    es: {
-      title: 'Conoce a Dios',
-      subtitle: 'Descubre sus maravillosos atributos',
-      back: 'Volver',
-      godIs: 'Dios es',
-      clickToExplore: 'Toca un atributo para conocer más',
-      newVerse: 'Otro versículo',
-      loading: 'Cargando...',
-      verseCount: 'de'
-    },
-    en: {
-      title: 'Know God',
-      subtitle: 'Discover His wonderful attributes',
-      back: 'Back',
-      godIs: 'God is',
-      clickToExplore: 'Tap an attribute to learn more',
-      newVerse: 'Another verse',
-      loading: 'Loading...',
-      verseCount: 'of'
-    }
-  }
+  const t = UI_TEXT[lang] || UI_TEXT.es
 
-  const t = texts[lang] || texts.es
+  // Limpiar selección al cambiar idioma o versión para forzar recarga
+  useEffect(() => {
+    setSelectedAttribute(null)
+  }, [lang, bibleVersion])
 
-  // Cuando se selecciona un atributo, cargar versículo si no tiene uno aún
+  // Cargar versículo cuando se selecciona un atributo
   useEffect(() => {
     if (selectedAttribute && !getCurrentVerse(selectedAttribute.id)) {
-      loadVerse(selectedAttribute, lang)
+      loadVerse(selectedAttribute, lang, bibleVersion)
     }
-  }, [selectedAttribute])
+  }, [selectedAttribute, lang, bibleVersion])
 
   const handleSelectAttribute = (attr) => {
     if (selectedAttribute?.id === attr.id) {
@@ -67,7 +50,7 @@ export function AttributesPage() {
 
   const handleNewVerse = () => {
     if (selectedAttribute && !loading) {
-      loadVerse(selectedAttribute, lang)
+      loadVerse(selectedAttribute, lang, bibleVersion)
     }
   }
 
@@ -103,12 +86,12 @@ export function AttributesPage() {
       <header className="attributes-header">
         <Link to="/" className="back-btn">
           <ArrowLeft size={20} />
-          <span>{t.back}</span>
+          <span>{t.backBtn}</span>
         </Link>
         <div className="header-content">
           <Crown size={40} className="header-crown" />
-          <h1>{t.title}</h1>
-          <p>{t.subtitle}</p>
+          <h1>{t.attributesTitle}</h1>
+          <p>{t.attributesSubtitle}</p>
         </div>
       </header>
 
@@ -224,6 +207,7 @@ export function AttributesPage() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   )
 }

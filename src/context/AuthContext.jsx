@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 
-// Simular base de datos de usuarios en localStorage
 const USERS_KEY = 'bible_app_users'
 const CURRENT_USER_KEY = 'bible_app_current_user'
 
@@ -76,12 +75,27 @@ export function AuthProvider({ children }) {
     localStorage.removeItem(CURRENT_USER_KEY)
   }
 
+  const updateProfile = ({ name, phone, password }) => {
+    const users = getUsers()
+    const idx = users.findIndex(u => u.id === user.id)
+    if (idx === -1) return { success: false }
+    users[idx].name = name
+    if (phone !== undefined) users[idx].phone = phone
+    if (password) users[idx].password = password
+    saveUsers(users)
+    const updated = { ...user, name, phone: phone ?? user.phone }
+    setUser(updated)
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updated))
+    return { success: true }
+  }
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    updateProfile,
     isAuthenticated: !!user
   }
 

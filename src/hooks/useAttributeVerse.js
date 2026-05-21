@@ -21,7 +21,7 @@ export function useAttributeVerse() {
     setVerseCache(prev => ({ ...prev, [attrId]: data }))
   }, [])
 
-  const loadVerse = useCallback(async (attribute, lang) => {
+  const loadVerse = useCallback(async (attribute, lang, bibleVersion) => {
     if (loadingRef.current) return
     loadingRef.current = true
     setLoading(true)
@@ -37,7 +37,7 @@ export function useAttributeVerse() {
 
       const refIndex = getRandomUnusedIndex(references, current.usedRefIndices)
       const reference = references[refIndex]
-      const result = await fetchVerse(reference, lang)
+      const result = await fetchVerse(reference, lang, bibleVersion)
 
       const newUsed = new Set(current.usedRefIndices)
       if (newUsed.size >= references.length) newUsed.clear()

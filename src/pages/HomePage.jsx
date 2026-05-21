@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
 import { Header, Footer, DailyVerseTab, MoodSearchTab } from '../components'
-import { useTheme, useDailyVerse, useMoodSearch } from '../hooks'
+import { useTheme, useDailyVerse, useMoodSearch, useFavorites } from '../hooks'
 import { UI_TEXT, getDailyAttribute } from '../data'
+import { useLang } from '../context'
 
 export function HomePage() {
-  const [lang, setLang] = useState('es')
+  const { lang, bibleVersion } = useLang()
   const [activeTab, setActiveTab] = useState('daily')
   
   const { theme, toggleTheme } = useTheme()
@@ -16,8 +17,8 @@ export function HomePage() {
     showRandom,
     generateRandomVerse,
     backToDaily
-  } = useDailyVerse(lang)
-  
+  } = useDailyVerse(lang, bibleVersion)
+
   const {
     searchQuery,
     setSearchQuery,
@@ -27,21 +28,31 @@ export function HomePage() {
     handleSearch,
     selectMoodCategory,
     toggleExpandedVerse
-  } = useMoodSearch(lang)
+  } = useMoodSearch(lang, bibleVersion)
+
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
 
   const dailyAttribute = useMemo(() => getDailyAttribute(lang), [lang])
 
   const t = UI_TEXT[lang]
 
+  const handleToggleFavorite = (verse) => {
+    if (isFavorite(verse.reference, verse.text)) {
+      removeFavorite(verse.reference, verse.text)
+    } else {
+      addFavorite(verse)
+    }
+  }
+
   return (
     <div className="app">
-      <Header 
-        lang={lang}
-        setLang={setLang}
+      <Header
         theme={theme}
         toggleTheme={toggleTheme}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onDailyTabClick={backToDaily}
+        favorites={favorites}
         t={t}
       />
 
@@ -55,7 +66,8 @@ export function HomePage() {
             generateRandomVerse={generateRandomVerse}
             backToDaily={backToDaily}
             dailyAttribute={dailyAttribute}
-            lang={lang}
+            isFavorite={isFavorite}
+            onToggleFavorite={handleToggleFavorite}
             t={t}
           />
         )}
@@ -76,7 +88,7 @@ export function HomePage() {
         )}
       </main>
 
-      <Footer lang={lang} t={t} />
+      <Footer />
     </div>
   )
 }

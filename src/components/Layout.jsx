@@ -1,13 +1,12 @@
 import { NavBar } from './NavBar'
-import { useSearchParams } from 'react-router-dom'
+import { useLang } from '../context/LangContext'
 
-export function Layout({ children, lang }) {
-  const [searchParams] = useSearchParams()
-  const currentLang = lang || searchParams.get('lang') || 'es'
+export function Layout({ children }) {
+  const { lang } = useLang()
 
   return (
     <>
-      <NavBar lang={currentLang} />
+      <NavBar lang={lang} />
       <div className="layout-content">
         {children}
       </div>

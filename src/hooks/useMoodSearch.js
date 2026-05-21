@@ -99,7 +99,7 @@ function findMoodCategory(query, lang, fuseInstance) {
   return null
 }
 
-export function useMoodSearch(lang) {
+export function useMoodSearch(lang, bibleVersion) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResult, setSearchResult] = useState(null)
   const [loadingMood, setLoadingMood] = useState(false)
@@ -111,11 +111,10 @@ export function useMoodSearch(lang) {
     return new Fuse(searchData, FUSE_OPTIONS)
   }, [lang])
 
-  // Limpiar resultados cuando cambia el idioma
   useEffect(() => {
     setSearchResult(null)
     setSearchQuery('')
-  }, [lang])
+  }, [lang, bibleVersion])
 
   const handleSearch = async (e) => {
     e?.preventDefault()
@@ -123,14 +122,14 @@ export function useMoodSearch(lang) {
     if (mood) {
       setLoadingMood(true)
       const randomRefs = getRandomReferences(mood.references, 4)
-      const verses = await fetchMultipleVerses(randomRefs, lang)
-      setSearchResult({ 
-        key: mood.key, 
-        iconKey: mood.key, 
-        title: mood.title, 
+      const verses = await fetchMultipleVerses(randomRefs, lang, bibleVersion)
+      setSearchResult({
+        key: mood.key,
+        iconKey: mood.key,
+        title: mood.title,
         searchTerm: searchQuery,
         matchedWord: mood.matchedWord,
-        verses: verses 
+        verses: verses
       })
       setExpandedVerse(null)
       setLoadingMood(false)
@@ -145,13 +144,13 @@ export function useMoodSearch(lang) {
     const title = mood.title[lang] || mood.title.es
     setSearchQuery(title)
     const randomRefs = getRandomReferences(mood.references, 4)
-    const verses = await fetchMultipleVerses(randomRefs, lang)
-    setSearchResult({ 
-      key: key, 
-      iconKey: key, 
-      title: title, 
-      searchTerm: title, 
-      verses: verses 
+    const verses = await fetchMultipleVerses(randomRefs, lang, bibleVersion)
+    setSearchResult({
+      key: key,
+      iconKey: key,
+      title: title,
+      searchTerm: title,
+      verses: verses
     })
     setExpandedVerse(null)
     setLoadingMood(false)

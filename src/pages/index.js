@@ -1,4 +1,8 @@
+export { LandingPage } from './LandingPage'
 export { LoginPage } from './LoginPage'
 export { RegisterPage } from './RegisterPage'
 export { HomePage } from './HomePage'
 export { AttributesPage } from './AttributesPage'
+export { BiblePage } from './BiblePage'
+export { ProfilePage } from './ProfilePage'
+export { SearchPage } from './SearchPage'

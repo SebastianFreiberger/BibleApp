@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { fetchVerse } from '../services'
 import { ALL_REFERENCES } from '../data'
 
-// Funcion para generar un numero basado en la fecha del dia
 function getDailySeed() {
   const today = new Date()
   const dateString = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate()
@@ -15,39 +14,39 @@ function getDailySeed() {
   return Math.abs(hash)
 }
 
-export function useDailyVerse(lang) {
+export function useDailyVerse(lang, bibleVersion) {
   const [dailyVerse, setDailyVerse] = useState(null)
   const [randomVerse, setRandomVerse] = useState(null)
   const [loading, setLoading] = useState(true)
   const [loadingRandom, setLoadingRandom] = useState(false)
   const [showRandom, setShowRandom] = useState(false)
 
-  // Cargar versículo del día cuando cambia el idioma
   useEffect(() => {
     async function loadDailyVerse() {
       setLoading(true)
       const seed = getDailySeed()
       const index = seed % ALL_REFERENCES.length
       const reference = ALL_REFERENCES[index]
-      const verse = await fetchVerse(reference, lang)
+      const verse = await fetchVerse(reference, lang, bibleVersion)
       setDailyVerse(verse)
       setLoading(false)
     }
     loadDailyVerse()
-    // Limpiar estados al cambiar idioma
     setRandomVerse(null)
     setShowRandom(false)
-  }, [lang])
+  }, [lang, bibleVersion])
 
   const generateRandomVerse = async () => {
     setLoadingRandom(true)
-    let reference
+    const seed = getDailySeed()
+    const dailyIndex = seed % ALL_REFERENCES.length
+    let randomIndex
     do {
-      const randomIndex = Math.floor(Math.random() * ALL_REFERENCES.length)
-      reference = ALL_REFERENCES[randomIndex]
-    } while (dailyVerse && reference === dailyVerse.reference)
-    
-    const verse = await fetchVerse(reference, lang)
+      randomIndex = Math.floor(Math.random() * ALL_REFERENCES.length)
+    } while (randomIndex === dailyIndex)
+    const reference = ALL_REFERENCES[randomIndex]
+
+    const verse = await fetchVerse(reference, lang, bibleVersion)
     setRandomVerse(verse)
     setShowRandom(true)
     setLoadingRandom(false)
