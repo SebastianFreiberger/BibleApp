@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { getAllAttributes, UI_TEXT } from '../data'
 import { useAttributeVerse } from '../hooks'
 import { useLang } from '../context'
-import { Footer } from '../components'
+import { Footer, ScrollToTop } from '../components'
 import {
   ArrowLeft, Crown, Shield, Heart, Sparkles, Scale, Zap, Globe, Gift,
   HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
@@ -208,6 +208,7 @@ export function AttributesPage() {
         </div>
       )}
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

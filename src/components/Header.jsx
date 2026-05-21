@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { BookHeart, CalendarHeart, MessageCircleHeart,
          User, Heart, X, BookOpen, Book, Library, Search,
-         ChevronRight, Languages } from 'lucide-react'
+         ChevronRight, Languages, LogOut } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useLang } from '../context/LangContext'
@@ -14,7 +14,7 @@ function getInitials(name = '') {
 }
 
 export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTabClick, favorites = [], t }) {
-  const { user, isAuthenticated } = useAuth()
+  const { user, isAuthenticated, logout } = useAuth()
   const { lang, setLang } = useLang()
   const [showFavorites, setShowFavorites] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -131,6 +131,19 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
 
           <div className="mmp-sep" />
 
+          {/* Versión bíblica */}
+          <div className="mmp-row">
+            <div className="mmp-row-left">
+              <div className="mmp-icon-wrap mmp-icon-version">
+                <BookOpen size={15} />
+              </div>
+              <span className="mmp-item-name">{lang === 'es' ? 'Versión' : 'Version'}</span>
+            </div>
+            <VersionSelector t={t} />
+          </div>
+
+          <div className="mmp-sep" />
+
           {/* Favoritos */}
           <button
             className={'mmp-item' + (showFavorites ? ' active' : '')}
@@ -161,18 +174,23 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
             </div>
           </div>
 
-          <div className="mmp-sep" />
-
-          {/* Versión bíblica */}
-          <div className="mmp-row">
-            <div className="mmp-row-left">
-              <div className="mmp-icon-wrap mmp-icon-version">
-                <BookOpen size={15} />
-              </div>
-              <span className="mmp-item-name">{lang === 'es' ? 'Versión' : 'Version'}</span>
-            </div>
-            <VersionSelector t={t} />
-          </div>
+          {/* Cerrar sesión — solo si está autenticado */}
+          {isAuthenticated && (
+            <>
+              <div className="mmp-sep" />
+              <button
+                className="mmp-item mmp-item-logout"
+                onClick={() => { logout(); setMenuOpen(false) }}
+              >
+                <div className="mmp-icon-wrap mmp-icon-logout">
+                  <LogOut size={16} />
+                </div>
+                <div className="mmp-item-text">
+                  <span className="mmp-item-name">{lang === 'es' ? 'Cerrar sesión' : 'Log out'}</span>
+                </div>
+              </button>
+            </>
+          )}
 
         </div>
       </nav>

@@ -10,7 +10,7 @@ import { useAuth } from '../context'
 import { useLang } from '../context'
 import { useTheme, useFavorites, useStreak } from '../hooks'
 import { UI_TEXT, BIBLE_VERSIONS } from '../data'
-import { Footer } from '../components'
+import { Footer, ScrollToTop } from '../components'
 
 // ── Helpers ────────────────────────────────────────────
 function getInitials(name = '') {
@@ -575,6 +575,7 @@ export function ProfilePage() {
         </main>
       </div>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

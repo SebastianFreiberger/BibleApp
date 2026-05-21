@@ -5,7 +5,7 @@ import { useLang } from '../context'
 import { useTheme, useFavorites } from '../hooks'
 import { searchVerses } from '../services/bibleApi'
 import { BOOK_LIST } from '../data'
-import { Footer } from '../components'
+import { Footer, ScrollToTop } from '../components'
 
 const BOOK_BY_ID = Object.fromEntries(BOOK_LIST.map(b => [b.id, b]))
 
@@ -157,6 +157,7 @@ export function SearchPage() {
         )}
       </div>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }

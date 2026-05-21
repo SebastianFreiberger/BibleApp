@@ -5,7 +5,7 @@ import { useLang } from '../context'
 import { useTheme, useFavorites } from '../hooks'
 import { UI_TEXT, BOOK_LIST } from '../data'
 import { fetchChapter } from '../services/bibleApi'
-import { VersionSelector, Footer } from '../components'
+import { VersionSelector, Footer, ScrollToTop } from '../components'
 import { SearchTab } from '../components/Header'
 
 export function BiblePage() {
@@ -298,6 +298,7 @@ export function BiblePage() {
         )}
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   )
 }
