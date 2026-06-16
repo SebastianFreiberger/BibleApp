@@ -8,6 +8,7 @@ export function MoodSearchTab({
   searchResult,
   loadingMood,
   expandedVerse,
+  hasSearched,
   handleSearch,
   selectMoodCategory,
   toggleExpandedVerse,
@@ -56,7 +57,7 @@ export function MoodSearchTab({
         />
       )}
 
-      {searchQuery && !searchResult && !loadingMood && (
+      {hasSearched && !searchResult && !loadingMood && (
         <div className="no-results">
           <p>😔 {t.noResults} "{searchQuery}"</p>
           <p>{t.tryWith}</p>

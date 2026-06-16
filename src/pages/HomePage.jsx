@@ -25,6 +25,7 @@ export function HomePage() {
     searchResult,
     loadingMood,
     expandedVerse,
+    hasSearched,
     handleSearch,
     selectMoodCategory,
     toggleExpandedVerse
@@ -80,6 +81,7 @@ export function HomePage() {
             searchResult={searchResult}
             loadingMood={loadingMood}
             expandedVerse={expandedVerse}
+            hasSearched={hasSearched}
             handleSearch={handleSearch}
             selectMoodCategory={selectMoodCategory}
             toggleExpandedVerse={toggleExpandedVerse}

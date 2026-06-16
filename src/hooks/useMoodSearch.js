@@ -85,6 +85,7 @@ export function useMoodSearch(lang, bibleVersion) {
   const [searchResult, setSearchResult] = useState(null)
   const [loadingMood, setLoadingMood] = useState(false)
   const [expandedVerse, setExpandedVerse] = useState(null)
+  const [hasSearched, setHasSearched] = useState(false)
 
   const fuseInstance = useMemo(() => {
     return new Fuse(createSearchIndex(lang), FUSE_OPTIONS)
@@ -93,6 +94,7 @@ export function useMoodSearch(lang, bibleVersion) {
   useEffect(() => {
     setSearchResult(null)
     setSearchQuery('')
+    setHasSearched(false)
   }, [lang, bibleVersion])
 
   const handleSearch = async (e) => {
@@ -100,6 +102,7 @@ export function useMoodSearch(lang, bibleVersion) {
     const query = searchQuery.trim()
     if (!query) return
 
+    setHasSearched(true)
     setLoadingMood(true)
 
     const wordCount = query.split(/\s+/).length
@@ -174,6 +177,7 @@ export function useMoodSearch(lang, bibleVersion) {
     searchResult,
     loadingMood,
     expandedVerse,
+    hasSearched,
     handleSearch,
     selectMoodCategory,
     toggleExpandedVerse

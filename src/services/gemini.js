@@ -12,15 +12,59 @@ export async function classifyMood(text, lang = 'es') {
 
   const prompt = lang === 'es'
     ? `El usuario de una app bíblica escribió cómo se siente: "${text}"
-Identifica las 1 a 3 categorías emocionales que mejor describen lo que expresa.
-Responde ÚNICAMENTE con un array JSON, sin texto adicional, usando solo categorías de esta lista:
-${VALID_CATEGORIES.join(', ')}
-Ejemplo válido: ["triste", "cansado"]`
+Identifica las 1 a 3 categorías emocionales que mejor describen TODAS las emociones presentes.
+Si expresa emociones mixtas o contradictorias, incluí todas las relevantes.
+
+Cada categoría cubre:
+- triste: tristeza, melancolía, llanto, pena
+- ansioso: preocupación, nerviosismo, angustia, estrés
+- miedo: temor, terror, fobia, inseguridad ante peligro
+- agradecido: gratitud, agradecimiento, gracias a Dios
+- esperanza: optimismo, ilusión, futuro mejor, alegría, contento, felicidad
+- fe: confianza en Dios, creer, espiritualidad
+- fortaleza: necesidad de fuerza, resistencia, valentía
+- amor: amor romántico, afecto, querer a alguien
+- paz: calma, serenidad, tranquilidad, descanso mental
+- perdido: soledad, solo, desorientado, sin rumbo, vacío, aislado
+- cansado: agotamiento, fatiga, rendido, sin energía
+- enojado: ira, rabia, frustración, molestia
+- duelo: pérdida, luto, muerte de ser querido
+- autoestima: inseguridad, baja autoestima, no valerse
+- relaciones: conflictos con otros, problemas de pareja/familia/amigos
+- identidad: quién soy, propósito de vida, búsqueda de sentido
+- proposito: sin dirección, qué hacer con mi vida
+- perdon: necesito perdonar o que me perdonen
+- culpa: culpabilidad, vergüenza, remordimiento
+
+Responde ÚNICAMENTE con un array JSON, sin texto adicional.
+Ejemplo: ["triste", "perdido"]`
     : `A user of a Bible app wrote how they feel: "${text}"
-Identify 1 to 3 emotional categories that best describe what they express.
-Respond ONLY with a JSON array, no extra text, using only categories from this list:
-${VALID_CATEGORIES.join(', ')}
-Valid example: ["sad", "tired"]`
+Identify 1 to 3 emotional categories that best describe ALL emotions present.
+If they express mixed or contradictory emotions, include all relevant ones.
+
+Each category covers:
+- triste: sadness, melancholy, crying, grief
+- ansioso: worry, nervousness, anguish, stress
+- miedo: fear, terror, phobia, insecurity about danger
+- agradecido: gratitude, thankfulness, thanks to God
+- esperanza: optimism, hope, better future, joy, happiness, contentment
+- fe: trust in God, belief, spirituality
+- fortaleza: need for strength, resilience, courage
+- amor: romantic love, affection, caring for someone
+- paz: calm, serenity, tranquility, mental rest
+- perdido: loneliness, alone, disoriented, lost, empty, isolated
+- cansado: exhaustion, fatigue, giving up, no energy
+- enojado: anger, rage, frustration, annoyance
+- duelo: loss, mourning, death of loved one
+- autoestima: insecurity, low self-esteem
+- relaciones: conflicts with others, relationship problems
+- identidad: who am I, search for meaning
+- proposito: no direction, what to do with my life
+- perdon: need to forgive or be forgiven
+- culpa: guilt, shame, remorse
+
+Respond ONLY with a JSON array, no extra text.
+Valid example: ["triste", "perdido"]`
 
   try {
     const res = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
