@@ -88,16 +88,31 @@ function MoodCategories({ lang, searchResult, loadingMood, selectMoodCategory })
 }
 
 function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse }) {
-  const ResultIcon = MOOD_ICONS[searchResult.iconKey]
-  const categoryTitle = MOOD_REFERENCES[searchResult.key].title[lang] || MOOD_REFERENCES[searchResult.key].title.es
+  const es = lang === 'es'
+  const categories = searchResult.categories?.length ? searchResult.categories : [searchResult.key]
 
   return (
     <div className="search-results">
       <div className="search-result-header">
         <p className="search-term">"{searchResult.searchTerm}"</p>
-        <h3 className={'results-title mood-result-' + searchResult.key}>
-          <span className="result-icon"><ResultIcon size={24} /></span> {categoryTitle}
-        </h3>
+
+        <div className="detected-emotions">
+          <span className="detected-label">
+            {es ? 'Emociones detectadas' : 'Detected emotions'}
+          </span>
+          <div className="detected-chips">
+            {categories.map(key => {
+              const Icon = MOOD_ICONS[key]
+              const title = MOOD_REFERENCES[key]?.title?.[lang] || MOOD_REFERENCES[key]?.title?.es || key
+              return (
+                <span key={key} className={'detected-chip detected-chip-' + key}>
+                  {Icon && <Icon size={13} />}
+                  {title}
+                </span>
+              )
+            })}
+          </div>
+        </div>
       </div>
       <div className="verses-list">
         {searchResult.verses.map((verse, index) => (

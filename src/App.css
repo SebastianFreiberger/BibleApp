@@ -2258,19 +2258,65 @@
 .search-term {
   font-size: 0.95rem;
   color: #64748b;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-style: italic;
 }
 
-.results-title {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0;
+.detected-emotions {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
+
+.detected-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.detected-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.detected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1.5px solid currentColor;
+  opacity: 0.9;
+}
+
+/* Colores por categoría */
+.detected-chip-triste     { color: #60a5fa; background: rgba(96,165,250,0.1); }
+.detected-chip-ansioso    { color: #fb923c; background: rgba(251,146,60,0.1); }
+.detected-chip-miedo      { color: #a78bfa; background: rgba(167,139,250,0.1); }
+.detected-chip-agradecido { color: #34d399; background: rgba(52,211,153,0.1); }
+.detected-chip-esperanza  { color: #fbbf24; background: rgba(251,191,36,0.1); }
+.detected-chip-fe         { color: #818cf8; background: rgba(129,140,248,0.1); }
+.detected-chip-fortaleza  { color: #f87171; background: rgba(248,113,113,0.1); }
+.detected-chip-amor       { color: #f472b6; background: rgba(244,114,182,0.1); }
+.detected-chip-paz        { color: #67e8f9; background: rgba(103,232,249,0.1); }
+.detected-chip-perdido    { color: #94a3b8; background: rgba(148,163,184,0.1); }
+.detected-chip-cansado    { color: #a3a3a3; background: rgba(163,163,163,0.1); }
+.detected-chip-enojado    { color: #ef4444; background: rgba(239,68,68,0.1); }
+.detected-chip-duelo      { color: #7dd3fc; background: rgba(125,211,252,0.1); }
+.detected-chip-autoestima { color: #fde68a; background: rgba(253,230,138,0.1); }
+.detected-chip-relaciones { color: #86efac; background: rgba(134,239,172,0.1); }
+.detected-chip-identidad  { color: #c4b5fd; background: rgba(196,181,253,0.1); }
+.detected-chip-proposito  { color: #fdba74; background: rgba(253,186,116,0.1); }
+.detected-chip-perdon     { color: #f9a8d4; background: rgba(249,168,212,0.1); }
+.detected-chip-culpa      { color: #fca5a5; background: rgba(252,165,165,0.1); }
 
 .result-icon {
   display: flex;
