@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from 'react'
 import Fuse from 'fuse.js'
 import { fetchMultipleVerses } from '../services'
+import { classifyMood } from '../services/gemini'
 import { MOOD_REFERENCES } from '../data'
 
-// Funcion para mezclar un array aleatoriamente
 function shuffleArray(array) {
   const shuffled = [...array]
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -15,39 +15,42 @@ function shuffleArray(array) {
   return shuffled
 }
 
-// Funcion para obtener referencias aleatorias
 function getRandomReferences(references, count = 4) {
-  const shuffled = shuffleArray(references)
-  return shuffled.slice(0, count)
+  return shuffleArray(references).slice(0, count)
 }
 
-// Crear índice de búsqueda para Fuse.js
+function getRefsFromCategories(categories, count = 4) {
+  const pool = []
+  const perCategory = Math.ceil(count / categories.length)
+  for (const key of categories) {
+    const mood = MOOD_REFERENCES[key]
+    if (!mood) continue
+    const refs = getRandomReferences(mood.references, perCategory)
+    pool.push(...refs)
+  }
+  // Deduplicate and trim to count
+  return [...new Set(pool)].slice(0, count)
+}
+
+function buildTitleFromCategories(categories, lang) {
+  return categories
+    .map(k => MOOD_REFERENCES[k]?.title?.[lang] || MOOD_REFERENCES[k]?.title?.es || k)
+    .join(' · ')
+}
+
 function createSearchIndex(lang) {
-  const searchItems = []
-  
+  const items = []
   for (const [key, mood] of Object.entries(MOOD_REFERENCES)) {
     const keywords = mood.keywords[lang] || mood.keywords.es
     const title = mood.title[lang] || mood.title.es
-    
-    searchItems.push({
-      text: title.toLowerCase(),
-      moodKey: key,
-      isTitle: true
-    })
-    
-    for (const keyword of keywords) {
-      searchItems.push({
-        text: keyword,
-        moodKey: key,
-        isTitle: false
-      })
+    items.push({ text: title.toLowerCase(), moodKey: key, isTitle: true })
+    for (const kw of keywords) {
+      items.push({ text: kw, moodKey: key, isTitle: false })
     }
   }
-  
-  return searchItems
+  return items
 }
 
-// Opciones de Fuse.js para búsqueda difusa
 const FUSE_OPTIONS = {
   keys: ['text'],
   threshold: 0.4,
@@ -56,47 +59,25 @@ const FUSE_OPTIONS = {
   includeScore: true
 }
 
-// Funcion para buscar versiculos por estado de animo con búsqueda difusa
-function findMoodCategory(query, lang, fuseInstance) {
-  const normalizedQuery = query.toLowerCase().trim()
-  if (!normalizedQuery) return null
-  
-  let results = fuseInstance.search(normalizedQuery)
-  
+function fuseSearch(query, lang, fuseInstance) {
+  const normalized = query.toLowerCase().trim()
+  if (!normalized) return null
+
+  let results = fuseInstance.search(normalized)
+
   if (results.length === 0 || results[0].score > 0.3) {
-    const words = normalizedQuery.split(/\s+/).filter(w => w.length >= 2)
-    let bestResult = results.length > 0 ? results[0] : null
-    
+    const words = normalized.split(/\s+/).filter(w => w.length >= 2)
+    let best = results[0] ?? null
     for (const word of words) {
-      const wordResults = fuseInstance.search(word)
-      if (wordResults.length > 0) {
-        if (!bestResult || wordResults[0].score < bestResult.score) {
-          bestResult = wordResults[0]
-        }
-      }
+      const r = fuseInstance.search(word)
+      if (r.length > 0 && (!best || r[0].score < best.score)) best = r[0]
     }
-    
-    if (bestResult) {
-      results = [bestResult]
-    }
+    if (best) results = [best]
   }
-  
-  if (results.length > 0) {
-    const bestMatch = results[0]
-    const moodKey = bestMatch.item.moodKey
-    const mood = MOOD_REFERENCES[moodKey]
-    
-    return {
-      key: moodKey,
-      iconKey: moodKey,
-      title: mood.title[lang] || mood.title.es,
-      matchedWord: bestMatch.item.text,
-      score: bestMatch.score,
-      references: mood.references
-    }
-  }
-  
-  return null
+
+  if (!results.length) return null
+  const { item, score } = results[0]
+  return { key: item.moodKey, score, matchedWord: item.text }
 }
 
 export function useMoodSearch(lang, bibleVersion) {
@@ -105,10 +86,8 @@ export function useMoodSearch(lang, bibleVersion) {
   const [loadingMood, setLoadingMood] = useState(false)
   const [expandedVerse, setExpandedVerse] = useState(null)
 
-  // Crear índice de Fuse.js que se actualiza cuando cambia el idioma
   const fuseInstance = useMemo(() => {
-    const searchData = createSearchIndex(lang)
-    return new Fuse(searchData, FUSE_OPTIONS)
+    return new Fuse(createSearchIndex(lang), FUSE_OPTIONS)
   }, [lang])
 
   useEffect(() => {
@@ -118,39 +97,68 @@ export function useMoodSearch(lang, bibleVersion) {
 
   const handleSearch = async (e) => {
     e?.preventDefault()
-    const mood = findMoodCategory(searchQuery, lang, fuseInstance)
-    if (mood) {
-      setLoadingMood(true)
-      const randomRefs = getRandomReferences(mood.references, 4)
-      const verses = await fetchMultipleVerses(randomRefs, lang, bibleVersion)
-      setSearchResult({
-        key: mood.key,
-        iconKey: mood.key,
-        title: mood.title,
-        searchTerm: searchQuery,
-        matchedWord: mood.matchedWord,
-        verses: verses
-      })
-      setExpandedVerse(null)
-      setLoadingMood(false)
-    } else {
-      setSearchResult(null)
+    const query = searchQuery.trim()
+    if (!query) return
+
+    setLoadingMood(true)
+
+    const wordCount = query.split(/\s+/).length
+    const fuseMatch = fuseSearch(query, lang, fuseInstance)
+    const useGemini = wordCount > 4 || !fuseMatch || fuseMatch.score > 0.25
+
+    let categories = []
+    let usedGemini = false
+
+    if (useGemini) {
+      const geminiCategories = await classifyMood(query, lang)
+      if (geminiCategories?.length) {
+        categories = geminiCategories
+        usedGemini = true
+      }
     }
+
+    // Fallback a Fuse si Gemini falló o no aplica
+    if (!categories.length && fuseMatch) {
+      categories = [fuseMatch.key]
+    }
+
+    if (!categories.length) {
+      setSearchResult(null)
+      setLoadingMood(false)
+      return
+    }
+
+    const refs = getRefsFromCategories(categories, 4)
+    const verses = await fetchMultipleVerses(refs, lang, bibleVersion)
+
+    setSearchResult({
+      key: categories[0],
+      iconKey: categories[0],
+      title: buildTitleFromCategories(categories, lang),
+      searchTerm: query,
+      matchedWord: usedGemini ? null : fuseMatch?.matchedWord,
+      verses,
+      categories,
+    })
+    setExpandedVerse(null)
+    setLoadingMood(false)
   }
 
   const selectMoodCategory = async (key) => {
     const mood = MOOD_REFERENCES[key]
+    if (!mood) return
     setLoadingMood(true)
     const title = mood.title[lang] || mood.title.es
     setSearchQuery(title)
-    const randomRefs = getRandomReferences(mood.references, 4)
-    const verses = await fetchMultipleVerses(randomRefs, lang, bibleVersion)
+    const refs = getRandomReferences(mood.references, 4)
+    const verses = await fetchMultipleVerses(refs, lang, bibleVersion)
     setSearchResult({
-      key: key,
+      key,
       iconKey: key,
-      title: title,
+      title,
       searchTerm: title,
-      verses: verses
+      verses,
+      categories: [key],
     })
     setExpandedVerse(null)
     setLoadingMood(false)
