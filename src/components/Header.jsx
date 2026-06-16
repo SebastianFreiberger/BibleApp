@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { BookHeart, CalendarHeart, MessageCircleHeart,
          User, Heart, X, BookOpen, Book, Library, Search,
          ChevronRight, Languages, LogOut } from 'lucide-react'
+import { YMTLogo } from './YMTLogo'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useLang } from '../context/LangContext'
@@ -23,7 +24,7 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
 
   useEffect(() => {
     if (user?.id) {
-      const saved = localStorage.getItem(`bible_app_avatar_${user.id}`)
+      const saved = localStorage.getItem(`ymt_avatar_${user.id}`)
       if (saved) setAvatarUrl(saved)
     }
   }, [user?.id])
@@ -50,8 +51,8 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
       {/* ── Navbar ──────────────────────────────────── */}
       <nav className="navbar" ref={navRef}>
         <Link to="/" className="navbar-brand" onClick={() => setMenuOpen(false)}>
-          <img src="/images/logobibleapp.png" alt="BibleApp" className="navbar-brand-img" />
-          <span>BibleApp</span>
+          <YMTLogo size={28} />
+          <span>YMT</span>
         </Link>
 
         {/* Controles desktop */}
@@ -77,7 +78,9 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
               <div className="nav-user-avatar">
                 {avatarUrl
                   ? <img src={avatarUrl} alt="avatar" />
-                  : <span>{getInitials(user?.name)}</span>
+                  : user?.name
+                    ? <span>{getInitials(user.name)}</span>
+                    : <User size={18} strokeWidth={1.5} />
                 }
               </div>
               <span className="nav-user-name">{user?.name?.split(' ')[0]}</span>
@@ -108,7 +111,9 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
               <div className="nav-user-avatar mmp-avatar">
                 {avatarUrl
                   ? <img src={avatarUrl} alt="avatar" />
-                  : <span>{getInitials(user?.name)}</span>
+                  : user?.name
+                    ? <span>{getInitials(user.name)}</span>
+                    : <User size={16} strokeWidth={1.5} />
                 }
               </div>
               <div className="mmp-item-text">

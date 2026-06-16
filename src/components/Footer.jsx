@@ -8,7 +8,7 @@ export function Footer() {
   return (
     <footer className="landing-footer">
       <div className="landing-footer-center">
-        <span className="landing-footer-brand">BibleApp</span>
+        <span className="landing-footer-brand">YourMessageToday</span>
         <Crown size={13} className="landing-footer-crown" />
         <span className="landing-footer-made">
           {es ? 'Hecho con' : 'Made with'}{' '}

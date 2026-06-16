@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Search, Heart, X, BookOpen, Sun, Moon } from 'lucide-react'
+import { ArrowLeft, Search, Heart, X, BookOpen, Sun, Moon, Sparkles } from 'lucide-react'
 import { useLang } from '../context'
 import { useTheme, useFavorites } from '../hooks'
 import { searchVerses } from '../services/bibleApi'
 import { BOOK_LIST } from '../data'
-import { Footer, ScrollToTop } from '../components'
+import { Footer, ScrollToTop, VersionSelector } from '../components'
+
+const SUGGESTIONS = {
+  es: ['amor', 'paz', 'fe', 'esperanza', 'fortaleza', 'gracia', 'perdón', 'gozo', 'confianza', 'oración', 'salvación', 'vida'],
+  en: ['love', 'peace', 'faith', 'hope', 'strength', 'grace', 'forgiveness', 'joy', 'trust', 'prayer', 'salvation', 'life'],
+}
 
 const BOOK_BY_ID = Object.fromEntries(BOOK_LIST.map(b => [b.id, b]))
 
@@ -74,6 +79,7 @@ export function SearchPage() {
           </Link>
         </div>
         <div className="bible-topbar-right">
+          <VersionSelector t={{ bibleVersionLabel: es ? 'Versión' : 'Version' }} compact />
           <button className="theme-btn" onClick={toggleTheme} aria-label="toggle theme">
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
@@ -148,11 +154,33 @@ export function SearchPage() {
 
         {!loading && !searched && (
           <div className="sr-empty">
-            <BookOpen size={52} strokeWidth={1.2} />
-            <p>{es
-              ? 'Escribí una palabra para buscar en todos los libros de la Biblia'
-              : 'Type a word to search across all books of the Bible'}
+            <BookOpen size={48} strokeWidth={1.2} className="sr-empty-icon" />
+            <p className="sr-empty-title">
+              {es ? 'Buscá en toda la Biblia' : 'Search the entire Bible'}
             </p>
+            <p className="sr-empty-sub">
+              {es
+                ? 'Ingresá una palabra, nombre o frase y encontrá versículos en segundos.'
+                : 'Enter a word, name or phrase and find verses in seconds.'}
+            </p>
+
+            <div className="sr-suggestions">
+              <span className="sr-suggestions-label">
+                <Sparkles size={13} />
+                {es ? 'Sugerencias' : 'Suggestions'}
+              </span>
+              <div className="sr-suggestions-chips">
+                {SUGGESTIONS[lang].map(word => (
+                  <button
+                    key={word}
+                    className="sr-chip"
+                    onClick={() => setQuery(word)}
+                  >
+                    {word}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

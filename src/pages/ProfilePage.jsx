@@ -19,12 +19,10 @@ function getInitials(name = '') {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-function getMemberSince(userId, lang) {
+function getMemberSince(createdAt, lang) {
+  if (!createdAt) return null
   try {
-    const users = JSON.parse(localStorage.getItem('bible_app_users') || '[]')
-    const found = users.find(u => u.id === userId)
-    if (!found?.createdAt) return null
-    return new Date(found.createdAt).toLocaleDateString(
+    return new Date(createdAt).toLocaleDateString(
       lang === 'es' ? 'es-ES' : 'en-US',
       { year: 'numeric', month: 'long' }
     )
@@ -309,7 +307,7 @@ function ProfileInfoSection({ user, avatarUrl, onAvatarChange, onSave, lang }) {
   const [success, setSuccess] = useState(false)
   const fileRef = useRef()
   const es = lang === 'es'
-  const memberSince = getMemberSince(user?.id, lang)
+  const memberSince = getMemberSince(user?.createdAt, lang)
 
   const handleFile = (e) => {
     const file = e.target.files[0]
@@ -347,7 +345,12 @@ function ProfileInfoSection({ user, avatarUrl, onAvatarChange, onSave, lang }) {
       {/* Avatar */}
       <div className="pi-avatar-wrap">
         <div className="pi-avatar">
-          {avatarUrl ? <img src={avatarUrl} alt="avatar" /> : <span>{getInitials(user?.name)}</span>}
+          {avatarUrl
+            ? <img src={avatarUrl} alt="avatar" />
+            : user?.name
+              ? <span>{getInitials(user.name)}</span>
+              : <User size={36} strokeWidth={1.5} />
+          }
           <button className="pi-avatar-edit" onClick={() => fileRef.current.click()} title={es ? 'Cambiar foto' : 'Change photo'}>
             <Camera size={16} />
           </button>
@@ -454,13 +457,13 @@ export function ProfilePage() {
 
   useEffect(() => {
     if (user?.id) {
-      const saved = localStorage.getItem(`bible_app_avatar_${user.id}`)
+      const saved = localStorage.getItem(`ymt_avatar_${user.id}`)
       if (saved) setAvatarUrl(saved)
     }
   }, [user?.id])
 
   const handleAvatarChange = (data) => {
-    localStorage.setItem(`bible_app_avatar_${user.id}`, data)
+    localStorage.setItem(`ymt_avatar_${user.id}`, data)
     setAvatarUrl(data)
   }
 
@@ -468,7 +471,7 @@ export function ProfilePage() {
     updateProfile({ name, phone, password })
   }
 
-  const memberSince = useMemo(() => getMemberSince(user?.id, lang), [user?.id, lang])
+  const memberSince = useMemo(() => getMemberSince(user?.createdAt, lang), [user?.id, lang])
   const initials = getInitials(user?.name)
 
   if (loading) return <div className="loading-screen"><div className="spinner" /></div>
@@ -513,6 +516,8 @@ export function ProfilePage() {
               {avatarUrl
                 ? <img src={avatarUrl} alt="avatar" />
                 : initials
+                  ? initials
+                  : <User size={18} strokeWidth={1.5} />
               }
               <div className="ps-mini-avatar-edit"><Camera size={12} /></div>
             </div>

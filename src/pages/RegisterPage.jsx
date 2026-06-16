@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth, useLang } from '../context'
 import { UI_TEXT } from '../data'
-import { BookHeart, Mail, Lock, User, UserPlus, AlertCircle, Phone, ArrowLeft } from 'lucide-react'
+import { BookHeart, Mail, Lock, User, UserPlus, AlertCircle, Phone, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 
 export function RegisterPage() {
   const { lang } = useLang()
@@ -11,6 +11,8 @@ export function RegisterPage() {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
@@ -70,12 +72,22 @@ export function RegisterPage() {
 
           <div className="form-group">
             <label htmlFor="password"><Lock size={18} />{t.passwordLabel}</label>
-            <input type="password" id="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" />
+            <div className="form-input-wrap">
+              <input type={showPassword ? 'text' : 'password'} id="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" />
+              <button type="button" className="form-eye-btn" onClick={() => setShowPassword(v => !v)} tabIndex={-1} aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="confirmPassword"><Lock size={18} />{t.confirmPasswordLabel}</label>
-            <input type="password" id="confirmPassword" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required placeholder="••••••••" />
+            <div className="form-input-wrap">
+              <input type={showConfirm ? 'text' : 'password'} id="confirmPassword" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required placeholder="••••••••" />
+              <button type="button" className="form-eye-btn" onClick={() => setShowConfirm(v => !v)} tabIndex={-1} aria-label={showConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="auth-btn" disabled={loading}>

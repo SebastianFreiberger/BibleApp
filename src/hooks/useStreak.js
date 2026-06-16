@@ -1,44 +1,54 @@
 import { useState, useEffect } from 'react'
-
-const STREAK_KEY = 'bible_app_streak'
+import { supabase } from '../services/supabase'
 
 export function useStreak() {
   const [streak, setStreak] = useState(0)
   const [activeDates, setActiveDates] = useState([])
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]
-    let data = { lastDate: null, count: 0, activeDates: [] }
+    let userId = null
 
-    try {
-      const raw = localStorage.getItem(STREAK_KEY)
-      if (raw) data = { activeDates: [], ...JSON.parse(raw) }
-    } catch { /* ignore */ }
+    const init = async (uid) => {
+      if (!uid) { setStreak(0); setActiveDates([]); return }
+      userId = uid
+      const today = new Date().toISOString().split('T')[0]
 
-    let newCount
+      // Registrar hoy si no existe
+      await supabase.from('streak_days').upsert({ user_id: uid, date: today }, { onConflict: 'user_id,date' })
 
-    if (!data.lastDate) {
-      newCount = 1
-    } else if (data.lastDate === today) {
-      setStreak(data.count)
-      setActiveDates(data.activeDates)
-      return
-    } else {
-      const diffMs = new Date(today) - new Date(data.lastDate)
-      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24))
-      newCount = diffDays === 1 ? data.count + 1 : 1
+      // Traer los últimos 120 días
+      const cutoff = new Date()
+      cutoff.setDate(cutoff.getDate() - 120)
+      const cutoffStr = cutoff.toISOString().split('T')[0]
+
+      const { data } = await supabase
+        .from('streak_days')
+        .select('date')
+        .eq('user_id', uid)
+        .gte('date', cutoffStr)
+        .order('date', { ascending: false })
+
+      const dates = (data ?? []).map(r => r.date)
+      setActiveDates(dates)
+
+      // Calcular racha consecutiva desde hoy hacia atrás
+      let count = 0
+      const check = new Date(today)
+      const dateSet = new Set(dates)
+      while (dateSet.has(check.toISOString().split('T')[0])) {
+        count++
+        check.setDate(check.getDate() - 1)
+      }
+      setStreak(count)
     }
 
-    // Agregar hoy y mantener solo los últimos 120 días
-    const cutoff = new Date()
-    cutoff.setDate(cutoff.getDate() - 120)
-    const cutoffStr = cutoff.toISOString().split('T')[0]
-    const newDates = [...new Set([...data.activeDates, today])].filter(d => d >= cutoffStr)
+    supabase.auth.getSession().then(({ data: { session } }) => init(session?.user?.id ?? null))
 
-    const updated = { lastDate: today, count: newCount, activeDates: newDates }
-    localStorage.setItem(STREAK_KEY, JSON.stringify(updated))
-    setStreak(newCount)
-    setActiveDates(newDates)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      init(session?.user?.id ?? null)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   return { streak, activeDates }

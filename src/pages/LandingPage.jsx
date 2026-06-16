@@ -4,10 +4,11 @@ import { useLang } from '../context'
 import { useTheme } from '../hooks'
 import { fetchVerse } from '../services/bibleApi'
 import { Footer } from '../components'
+import { YMTLogo } from '../components/YMTLogo'
 import {
   CalendarHeart, MessageCircleHeart, Library, Crown,
   BookOpen, Heart, Star, ArrowRight, ArrowUp,
-  UserPlus, ChevronDown, NotebookPen, BookMarked, Flame, Share2
+  UserPlus, ChevronDown, BookMarked, Flame
 } from 'lucide-react'
 
 const DAILY_REF_ES = 'Isaias:33:2'
@@ -51,13 +52,13 @@ const FEATURES = [
     descEn: 'Read the Bible book by book, chapter by chapter, in multiple versions.',
   },
   {
-    icon: NotebookPen,
-    color: '#06b6d4',
-    bg: 'rgba(6,182,212,0.1)',
-    titleEs: 'Notas en el calendario',
-    titleEn: 'Calendar notes',
-    descEs: 'Anotá reflexiones, oraciones o momentos importantes en tu calendario personal.',
-    descEn: 'Jot down reflections, prayers or important moments in your personal calendar.',
+    icon: Flame,
+    color: '#f97316',
+    bg: 'rgba(249,115,22,0.1)',
+    titleEs: 'Rachas diarias',
+    titleEn: 'Daily streaks',
+    descEs: 'Mantené tu constancia con rachas diarias y volvé cada día a la Palabra.',
+    descEn: 'Stay consistent with daily streaks and return to the Word every day.',
   },
   {
     icon: BookMarked,
@@ -69,22 +70,13 @@ const FEATURES = [
     descEn: 'Follow structured Bible plans and progress at your own pace.',
   },
   {
-    icon: Flame,
-    color: '#f97316',
-    bg: 'rgba(249,115,22,0.1)',
-    titleEs: 'Rachas diarias',
-    titleEn: 'Daily streaks',
-    descEs: 'Mantené tu constancia con rachas diarias y volvé cada día a la Palabra.',
-    descEn: 'Stay consistent with daily streaks and return to the Word every day.',
-  },
-  {
-    icon: Share2,
+    icon: Heart,
     color: '#ec4899',
     bg: 'rgba(236,72,153,0.1)',
-    titleEs: 'Compartí tu fe',
-    titleEn: 'Share your faith',
-    descEs: 'Enviá versículos a tus amigos y seres queridos con un solo toque.',
-    descEn: 'Send verses to your friends and loved ones with a single tap.',
+    titleEs: 'Guardá tus favoritos',
+    titleEn: 'Save your favorites',
+    descEs: 'Marcá los versículos que más te tocan y encontralos siempre desde tu perfil.',
+    descEn: 'Bookmark the verses that touch you most and find them anytime from your profile.',
   },
 ]
 
@@ -121,14 +113,14 @@ const STEPS = [
 
 const FAQ_ES = [
   { q: '¿Es gratis?', a: 'Sí, completamente gratis. Sin publicidad, sin costos ocultos.' },
-  { q: '¿Necesito internet?', a: 'Sí, BibleApp carga los versículos en tiempo real desde nuestra base de datos.' },
+  { q: '¿Necesito internet?', a: 'Sí, YMT carga los versículos en tiempo real desde nuestra base de datos.' },
   { q: '¿Puedo cambiar la versión bíblica?', a: 'Sí, podés elegir entre RV1960, NVI, LBLA y más desde cualquier pantalla.' },
   { q: '¿Mis favoritos se guardan?', a: 'Sí, quedan guardados en tu cuenta y podés verlos desde tu perfil.' },
 ]
 
 const FAQ_EN = [
   { q: 'Is it free?', a: 'Yes, completely free. No ads, no hidden fees.' },
-  { q: 'Do I need internet?', a: 'Yes, BibleApp loads verses in real time from our database.' },
+  { q: 'Do I need internet?', a: 'Yes, YMT loads verses in real time from our database.' },
   { q: 'Can I change the Bible version?', a: 'Yes, choose from KJV, WEB, ASV and more from any screen.' },
   { q: 'Are my favorites saved?', a: 'Yes, they\'re stored in your account and accessible from your profile.' },
 ]
@@ -141,7 +133,9 @@ export function LandingPage() {
   const [showTop, setShowTop] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
 
-  useEffect(() => { setTheme('dark') }, [])
+  useEffect(() => {
+    if (!localStorage.getItem('theme')) setTheme('dark')
+  }, [])
 
   useEffect(() => {
     const ref = es ? DAILY_REF_ES : DAILY_REF_EN
@@ -162,8 +156,8 @@ export function LandingPage() {
       {/* ── Navbar ── */}
       <nav className="landing-nav">
         <div className="landing-nav-brand">
-          <img src="/images/logobibleapp.png" alt="BibleApp" className="landing-nav-logo" />
-          <span>BibleApp</span>
+          <YMTLogo size={28} />
+          <span>YourMessageToday</span>
         </div>
         <div className="landing-nav-center">
           <div className="lang-toggle">
@@ -186,7 +180,7 @@ export function LandingPage() {
           <div className="landing-orb landing-orb-3" />
         </div>
         <div className="landing-hero-content">
-          <img src="/images/logobibleapp.png" alt="BibleApp logo" className="landing-hero-logo" />
+          <YMTLogo size={90} showTagline className="landing-hero-logo" />
           <h1 className="landing-hero-title">
             <span className="landing-hero-title-main">{es ? 'Tu Palabra' : 'Your Word'}</span>
             <span className="landing-hero-title-sub">{es ? 'de cada día' : 'every day'}</span>
@@ -211,7 +205,7 @@ export function LandingPage() {
       {/* ── Features ── */}
       <section className="landing-features">
         <h2 className="landing-section-title">
-          {es ? '¿Qué encontrás en BibleApp?' : 'What\'s in BibleApp?'}
+          {es ? '¿Qué encontrás en YMT?' : "What's in YMT?"}
         </h2>
         <div className="landing-features-grid">
           {FEATURES.map((f, i) => {

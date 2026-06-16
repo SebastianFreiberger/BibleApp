@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 380">
+  <defs>
+
+    <linearGradient id="lg" x1="55" y1="20" x2="445" y2="275" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#c4b5fd"/>
+      <stop offset="44%"  stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+
+    <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#a78bfa"/>
+      <stop offset="50%"  stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+
+    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#a78bfa" stop-opacity="0"/>
+      <stop offset="25%"  stop-color="#c4b5fd"/>
+      <stop offset="75%"  stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fb923c" stop-opacity="0"/>
+    </linearGradient>
+
+  </defs>
+
+  <!-- ── Y M T ── -->
+  <g stroke="url(#lg)" stroke-linecap="square" stroke-linejoin="miter" fill="none" stroke-width="26">
+    <!-- Y -->
+    <line x1="55"  y1="20"  x2="107" y2="150"/>
+    <line x1="160" y1="20"  x2="107" y2="150"/>
+    <line x1="107" y1="150" x2="107" y2="275"/>
+    <!-- M -->
+    <polyline points="196,275 196,20 250,128 304,20 304,275"/>
+    <!-- T -->
+    <line x1="340" y1="20"  x2="445" y2="20"/>
+    <line x1="392" y1="20"  x2="392" y2="275"/>
+  </g>
+
+  <!-- ── Small diamond signal above Y fork ── -->
+  <polygon points="107,6 115,20 107,34 99,20" fill="url(#ag)" opacity="0.90"/>
+
+  <!-- ── Underline ── -->
+  <rect x="55" y="292" width="390" height="2" fill="url(#ag)" opacity="0.85"/>
+
+  <!-- ── Tagline ── -->
+  <text
+    x="250" y="322"
+    text-anchor="middle"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="13"
+    font-weight="400"
+    letter-spacing="6"
+    fill="url(#tg)"
+    opacity="0.70"
+  >YOURMESSAGETODAY</text>
+
+</svg>

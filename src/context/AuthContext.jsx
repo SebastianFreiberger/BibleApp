@@ -1,91 +1,114 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { supabase } from '../services/supabase'
 
 const AuthContext = createContext(null)
 
-const USERS_KEY = 'bible_app_users'
-const CURRENT_USER_KEY = 'bible_app_current_user'
-
-function getUsers() {
-  const users = localStorage.getItem(USERS_KEY)
-  return users ? JSON.parse(users) : []
-}
-
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users))
+// Mezcla el usuario de Supabase con los datos del perfil en un objeto uniforme
+function buildUser(supabaseUser, profile) {
+  if (!supabaseUser) return null
+  return {
+    id: supabaseUser.id,
+    email: supabaseUser.email,
+    name: profile?.name || supabaseUser.user_metadata?.name || '',
+    phone: profile?.phone || supabaseUser.user_metadata?.phone || null,
+    createdAt: profile?.created_at || supabaseUser.created_at,
+    lang: profile?.lang || null,
+    bibleVersion: profile?.bible_version || null,
+    theme: profile?.theme || null,
+  }
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Cargar usuario al iniciar
+  const fetchProfile = async (supabaseUser) => {
+    if (!supabaseUser) { setUser(null); return }
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', supabaseUser.id)
+      .single()
+    setUser(buildUser(supabaseUser, profile))
+  }
+
   useEffect(() => {
-    const savedUser = localStorage.getItem(CURRENT_USER_KEY)
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-    }
-    setLoading(false)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      fetchProfile(session?.user ?? null).finally(() => setLoading(false))
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      fetchProfile(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const login = async (email, password) => {
-    const users = getUsers()
-    const foundUser = users.find(u => u.email === email && u.password === password)
-    
-    if (foundUser) {
-      const userData = { id: foundUser.id, name: foundUser.name, email: foundUser.email }
-      setUser(userData)
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userData))
-      return { success: true }
-    }
-    
-    return { success: false, error: 'Credenciales inválidas' }
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
   }
 
   const register = async (name, email, phone, password) => {
-    const users = getUsers()
-
-    // Verificar si el email ya existe
-    if (users.find(u => u.email === email)) {
-      return { success: false, error: 'Este email ya está registrado' }
-    }
-
-    // Crear nuevo usuario
-    const newUser = {
-      id: Date.now().toString(),
-      name,
+    const { data, error } = await supabase.auth.signUp({
       email,
-      phone,
-      password, // En producción esto debería estar hasheado
-      createdAt: new Date().toISOString()
+      password,
+      options: { data: { name, phone: phone || null } }
+    })
+    if (error) return { success: false, error: error.message }
+
+    // Si hay sesión activa (sin confirmación de email), guardamos el perfil
+    // explícitamente para asegurar que el nombre quede registrado
+    if (data.session) {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        name,
+        phone: phone || null,
+        lang: localStorage.getItem('lang') || 'es',
+        bible_version: localStorage.getItem('bibleVersion') || 'RV1960',
+        theme: localStorage.getItem('theme') || 'dark',
+      })
     }
-
-    users.push(newUser)
-    saveUsers(users)
-
-    // Auto login después del registro
-    const userData = { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone }
-    setUser(userData)
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userData))
 
     return { success: true }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem(CURRENT_USER_KEY)
+  const logout = async () => {
+    await supabase.auth.signOut()
   }
 
-  const updateProfile = ({ name, phone, password }) => {
-    const users = getUsers()
-    const idx = users.findIndex(u => u.id === user.id)
-    if (idx === -1) return { success: false }
-    users[idx].name = name
-    if (phone !== undefined) users[idx].phone = phone
-    if (password) users[idx].password = password
-    saveUsers(users)
-    const updated = { ...user, name, phone: phone ?? user.phone }
-    setUser(updated)
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updated))
+  const updateProfile = async ({ name, phone, password }) => {
+    if (!user) return { success: false }
+
+    if (password) {
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) return { success: false, error: error.message }
+    }
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({ name, phone: phone ?? null })
+      .eq('id', user.id)
+    if (error) return { success: false, error: error.message }
+
+    setUser(prev => ({ ...prev, name, phone: phone ?? null }))
+    return { success: true }
+  }
+
+  // Envía email de recuperación con link (plan gratuito Supabase)
+  const sendPasswordReset = async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  }
+
+  // Cambia la contraseña (requiere sesión activa tras clickear el link)
+  const resetPassword = async (newPassword) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) return { success: false, error: error.message }
     return { success: true }
   }
 
@@ -96,6 +119,8 @@ export function AuthProvider({ children }) {
     register,
     logout,
     updateProfile,
+    sendPasswordReset,
+    resetPassword,
     isAuthenticated: !!user
   }
 
@@ -108,8 +133,6 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth debe usarse dentro de AuthProvider')
-  }
+  if (!context) throw new Error('useAuth debe usarse dentro de AuthProvider')
   return context
 }
