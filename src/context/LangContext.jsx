@@ -18,7 +18,7 @@ export function LangProvider({ children }) {
     localStorage.setItem('bibleVersion', defaultVersion)
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user?.id) {
-      supabase.from('profiles')
+      await supabase.from('profiles')
         .update({ lang: newLang, bible_version: defaultVersion })
         .eq('id', session.user.id)
     }
@@ -29,7 +29,7 @@ export function LangProvider({ children }) {
     localStorage.setItem('bibleVersion', version)
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user?.id) {
-      supabase.from('profiles')
+      await supabase.from('profiles')
         .update({ bible_version: version })
         .eq('id', session.user.id)
     }

@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
     setThemeState(newTheme)
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user?.id) {
-      supabase.from('profiles').update({ theme: newTheme }).eq('id', session.user.id)
+      await supabase.from('profiles').update({ theme: newTheme }).eq('id', session.user.id)
     }
   }
 
