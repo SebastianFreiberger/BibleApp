@@ -4497,6 +4497,20 @@
   border: none; color: white;
 }
 .pi-avatar:hover .pi-avatar-edit { opacity: 1; }
+.pi-avatar-loading { opacity: 0.7; pointer-events: none; }
+.pi-avatar-spinner {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.45);
+}
+.pi-avatar-spinner::after {
+  content: ''; width: 24px; height: 24px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .pi-fields { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 1.5rem; }
 

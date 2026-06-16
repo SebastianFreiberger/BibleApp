@@ -297,7 +297,7 @@ function PlansSection({ lang }) {
 }
 
 // ── Profile Info Section ───────────────────────────────
-function ProfileInfoSection({ user, avatarUrl, onAvatarChange, onSave, lang }) {
+function ProfileInfoSection({ user, avatarUrl, avatarLoading, onAvatarChange, onSave, lang }) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(user?.name || '')
   const [phone, setPhone] = useState(user?.phone || '')
@@ -316,9 +316,8 @@ function ProfileInfoSection({ user, avatarUrl, onAvatarChange, onSave, lang }) {
       setError(es ? 'La imagen no puede superar 3MB' : 'Image cannot exceed 3MB')
       return
     }
-    const reader = new FileReader()
-    reader.onload = (ev) => { onAvatarChange(ev.target.result); setError('') }
-    reader.readAsDataURL(file)
+    setError('')
+    onAvatarChange(file)
   }
 
   const handleSave = () => {
@@ -344,16 +343,19 @@ function ProfileInfoSection({ user, avatarUrl, onAvatarChange, onSave, lang }) {
 
       {/* Avatar */}
       <div className="pi-avatar-wrap">
-        <div className="pi-avatar">
+        <div className={'pi-avatar' + (avatarLoading ? ' pi-avatar-loading' : '')}>
           {avatarUrl
             ? <img src={avatarUrl} alt="avatar" />
             : user?.name
               ? <span>{getInitials(user.name)}</span>
               : <User size={36} strokeWidth={1.5} />
           }
-          <button className="pi-avatar-edit" onClick={() => fileRef.current.click()} title={es ? 'Cambiar foto' : 'Change photo'}>
-            <Camera size={16} />
-          </button>
+          {avatarLoading
+            ? <div className="pi-avatar-spinner" />
+            : <button className="pi-avatar-edit" onClick={() => fileRef.current.click()} title={es ? 'Cambiar foto' : 'Change photo'}>
+                <Camera size={16} />
+              </button>
+          }
         </div>
         <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} hidden />
       </div>
@@ -444,7 +446,7 @@ function SidebarItem({ id, icon: Icon, label, active, badge, onClick }) {
 
 // ── Main component ─────────────────────────────────────
 export function ProfilePage() {
-  const { user, isAuthenticated, loading, logout, updateProfile } = useAuth()
+  const { user, isAuthenticated, loading, logout, updateProfile, updateAvatar } = useAuth()
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
 
@@ -454,17 +456,17 @@ export function ProfilePage() {
 
   const [activeSection, setActiveSection] = useState('favorites')
   const [avatarUrl, setAvatarUrl] = useState(null)
+  const [avatarLoading, setAvatarLoading] = useState(false)
 
   useEffect(() => {
-    if (user?.id) {
-      const saved = localStorage.getItem(`ymt_avatar_${user.id}`)
-      if (saved) setAvatarUrl(saved)
-    }
-  }, [user?.id])
+    if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
+  }, [user?.avatarUrl])
 
-  const handleAvatarChange = (data) => {
-    localStorage.setItem(`ymt_avatar_${user.id}`, data)
-    setAvatarUrl(data)
+  const handleAvatarChange = async (file) => {
+    setAvatarLoading(true)
+    const { success, avatarUrl: url, error } = await updateAvatar(file)
+    if (success) setAvatarUrl(url)
+    setAvatarLoading(false)
   }
 
   const handleSaveProfile = ({ name, phone, password }) => {
@@ -554,6 +556,7 @@ export function ProfilePage() {
             <ProfileInfoSection
               user={user}
               avatarUrl={avatarUrl}
+              avatarLoading={avatarLoading}
               onAvatarChange={handleAvatarChange}
               onSave={handleSaveProfile}
               lang={lang}

@@ -15,6 +15,7 @@ function buildUser(supabaseUser, profile) {
     lang: profile?.lang || null,
     bibleVersion: profile?.bible_version || null,
     theme: profile?.theme || null,
+    avatarUrl: profile?.avatar_url || null,
   }
 }
 
@@ -78,6 +79,25 @@ export function AuthProvider({ children }) {
     await supabase.auth.signOut()
   }
 
+  const updateAvatar = async (file) => {
+    if (!user) return { success: false }
+    const ext = file.name.split('.').pop()
+    const path = `${user.id}/avatar.${ext}`
+    const { error: upErr } = await supabase.storage
+      .from('avatars')
+      .upload(path, file, { upsert: true, contentType: file.type })
+    if (upErr) return { success: false, error: upErr.message }
+    const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`
+    const { error: dbErr } = await supabase
+      .from('profiles')
+      .update({ avatar_url: avatarUrl })
+      .eq('id', user.id)
+    if (dbErr) return { success: false, error: dbErr.message }
+    setUser(prev => ({ ...prev, avatarUrl }))
+    return { success: true, avatarUrl }
+  }
+
   const updateProfile = async ({ name, phone, password }) => {
     if (!user) return { success: false }
 
@@ -119,6 +139,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     updateProfile,
+    updateAvatar,
     sendPasswordReset,
     resetPassword,
     isAuthenticated: !!user
