@@ -85,6 +85,9 @@ export function HomePage() {
             handleSearch={handleSearch}
             selectMoodCategory={selectMoodCategory}
             toggleExpandedVerse={toggleExpandedVerse}
+            addFavorite={addFavorite}
+            removeFavorite={removeFavorite}
+            isFavorite={isFavorite}
             t={t}
           />
         )}

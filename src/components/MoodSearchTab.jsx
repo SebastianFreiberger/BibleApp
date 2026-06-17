@@ -1,4 +1,4 @@
-import { Search, Loader, ChevronDown, ChevronRight } from 'lucide-react'
+import { Search, Loader, ChevronDown, ChevronRight, Heart } from 'lucide-react'
 import { MOOD_ICONS, MOOD_REFERENCES } from '../data'
 
 export function MoodSearchTab({
@@ -12,6 +12,9 @@ export function MoodSearchTab({
   handleSearch,
   selectMoodCategory,
   toggleExpandedVerse,
+  addFavorite,
+  removeFavorite,
+  isFavorite,
   t
 }) {
   return (
@@ -49,11 +52,14 @@ export function MoodSearchTab({
       )}
 
       {searchResult && !loadingMood && (
-        <SearchResults 
+        <SearchResults
           lang={lang}
           searchResult={searchResult}
           expandedVerse={expandedVerse}
           toggleExpandedVerse={toggleExpandedVerse}
+          addFavorite={addFavorite}
+          removeFavorite={removeFavorite}
+          isFavorite={isFavorite}
         />
       )}
 
@@ -88,7 +94,7 @@ function MoodCategories({ lang, searchResult, loadingMood, selectMoodCategory })
   )
 }
 
-function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse }) {
+function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse, addFavorite, removeFavorite, isFavorite }) {
   const es = lang === 'es'
   const categories = searchResult.categories?.length ? searchResult.categories : [searchResult.key]
 
@@ -116,23 +122,37 @@ function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse 
         </div>
       </div>
       <div className="verses-list">
-        {searchResult.verses.map((verse, index) => (
-          <div 
-            key={index} 
-            className={'verse-item ' + (expandedVerse === index ? 'expanded' : '')}
-            onClick={() => toggleExpandedVerse(index)}
-          >
-            <div className="verse-item-header">
-              <span className="verse-item-reference">{verse.reference}</span>
-              <span className="verse-item-toggle">
-                {expandedVerse === index ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-              </span>
+        {searchResult.verses.map((verse, index) => {
+          const faved = isFavorite?.(verse.reference, verse.text)
+          return (
+            <div
+              key={index}
+              className={'verse-item ' + (expandedVerse === index ? 'expanded' : '')}
+              onClick={() => toggleExpandedVerse(index)}
+            >
+              <div className="verse-item-header">
+                <span className="verse-item-reference">{verse.reference}</span>
+                <div className="verse-item-actions" onClick={e => e.stopPropagation()}>
+                  {addFavorite && (
+                    <button
+                      className={'verse-fav-btn' + (faved ? ' active' : '')}
+                      onClick={() => faved ? removeFavorite(verse.reference, verse.text) : addFavorite(verse)}
+                      title={faved ? (es ? 'Quitar de favoritos' : 'Remove from favorites') : (es ? 'Agregar a favoritos' : 'Add to favorites')}
+                    >
+                      <Heart size={15} fill={faved ? 'currentColor' : 'none'} />
+                    </button>
+                  )}
+                  <span className="verse-item-toggle">
+                    {expandedVerse === index ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                  </span>
+                </div>
+              </div>
+              {expandedVerse === index && (
+                <p className="verse-item-text">"{verse.text}"</p>
+              )}
             </div>
-            {expandedVerse === index && (
-              <p className="verse-item-text">"{verse.text}"</p>
-            )}
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

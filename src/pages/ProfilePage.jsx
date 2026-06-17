@@ -4,7 +4,7 @@ import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
   User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Camera, Pencil, Sliders
+  Camera, Pencil, Sliders, Share2
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
@@ -48,7 +48,16 @@ const MONTHS_EN = ['January','February','March','April','May','June','July','Aug
 
 // ── Section components ─────────────────────────────────
 
-function FavoritesSection({ favorites, removeFavorite, t }) {
+async function shareFavorite(fav, lang) {
+  const text = `"${fav.text}"\n— ${fav.reference}${fav.version ? ` (${fav.version})` : ''}\n\nyourmessagetoday.vercel.app`
+  if (navigator.share) {
+    try { await navigator.share({ text }) } catch {}
+  } else {
+    await navigator.clipboard.writeText(text)
+  }
+}
+
+function FavoritesSection({ favorites, removeFavorite, lang, t }) {
   return (
     <div className="ps-section">
       <div className="ps-section-header">
@@ -72,13 +81,22 @@ function FavoritesSection({ favorites, removeFavorite, t }) {
                   {fav.version && <span className="ps-fav-version">{fav.version}</span>}
                 </div>
               </div>
-              <button
-                className="ps-fav-remove"
-                onClick={() => removeFavorite(fav.reference, fav.text)}
-                title={t.removeFavorite}
-              >
-                <Trash2 size={15} />
-              </button>
+              <div className="ps-fav-actions">
+                <button
+                  className="ps-fav-share"
+                  onClick={() => shareFavorite(fav, lang)}
+                  title={lang === 'es' ? 'Compartir' : 'Share'}
+                >
+                  <Share2 size={14} />
+                </button>
+                <button
+                  className="ps-fav-remove"
+                  onClick={() => removeFavorite(fav.reference, fav.text)}
+                  title={t.removeFavorite}
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -563,7 +581,7 @@ export function ProfilePage() {
             />
           )}
           {activeSection === 'favorites' && (
-            <FavoritesSection favorites={favorites} removeFavorite={removeFavorite} t={t} />
+            <FavoritesSection favorites={favorites} removeFavorite={removeFavorite} lang={lang} t={t} />
           )}
           {activeSection === 'stats' && (
             <StatsSection favorites={favorites} streak={streak} lang={lang} bibleVersion={bibleVersion} t={t} />

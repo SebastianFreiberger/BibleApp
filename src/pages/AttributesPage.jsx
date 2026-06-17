@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllAttributes, UI_TEXT } from '../data'
-import { useAttributeVerse } from '../hooks'
+import { useAttributeVerse, useFavorites } from '../hooks'
 import { useLang } from '../context'
 import { Footer, ScrollToTop } from '../components'
 import {
@@ -23,6 +23,7 @@ export function AttributesPage() {
   const { lang, bibleVersion } = useLang()
   const [selectedAttribute, setSelectedAttribute] = useState(null)
   const { loading, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo } = useAttributeVerse()
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites()
 
   const attributes = getAllAttributes(lang)
 
@@ -150,7 +151,22 @@ export function AttributesPage() {
                   <BookOpen size={18} />
                   <span>"{currentVerse.text}"</span>
                 </div>
-                <p className="modal-reference">— {currentVerse.reference}</p>
+                <div className="modal-verse-footer">
+                  <p className="modal-reference">— {currentVerse.reference}</p>
+                  <button
+                    className={'modal-fav-btn' + (isFavorite(currentVerse.reference, currentVerse.text) ? ' active' : '')}
+                    onClick={() => isFavorite(currentVerse.reference, currentVerse.text)
+                      ? removeFavorite(currentVerse.reference, currentVerse.text)
+                      : addFavorite(currentVerse)
+                    }
+                    title={isFavorite(currentVerse.reference, currentVerse.text)
+                      ? (lang === 'es' ? 'Quitar de favoritos' : 'Remove from favorites')
+                      : (lang === 'es' ? 'Agregar a favoritos' : 'Add to favorites')
+                    }
+                  >
+                    <Heart size={18} fill={isFavorite(currentVerse.reference, currentVerse.text) ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
 
                 {navInfo.total > 1 && (
                   <div className="verse-nav">
