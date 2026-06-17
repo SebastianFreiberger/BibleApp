@@ -4,7 +4,7 @@ import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
   User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Camera, Pencil, Sliders, Share2, Eye, EyeOff
+  Pencil, Sliders, Share2, Eye, EyeOff
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
@@ -360,7 +360,12 @@ function ProfileInfoSection({ user, onSave, lang }) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const es = lang === 'es'
-  const memberSince = getMemberSince(user?.createdAt, lang)
+  const memberSince = user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString(
+        es ? 'es-ES' : 'en-US',
+        { year: 'numeric', month: 'long', day: 'numeric' }
+      )
+    : null
 
   const handleSave = () => {
     if (!name.trim()) { setError(es ? 'El nombre no puede estar vacío' : 'Name cannot be empty'); return }
@@ -378,7 +383,7 @@ function ProfileInfoSection({ user, onSave, lang }) {
   }
 
   return (
-    <div className="ps-section">
+    <div className="ps-profile-card">
       <div className="ps-section-header">
         <User size={20} className="ps-section-icon icon-ver" />
         <h2>{es ? 'Mi perfil' : 'My profile'}</h2>
@@ -465,6 +470,7 @@ function ProfileInfoSection({ user, onSave, lang }) {
     </div>
   )
 }
+
 
 // ── Sidebar nav items ──────────────────────────────────
 function SidebarItem({ id, icon: Icon, label, active, badge, onClick }) {
