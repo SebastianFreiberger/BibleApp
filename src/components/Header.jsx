@@ -25,11 +25,8 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
   const userMenuRef = useRef()
 
   useEffect(() => {
-    if (user?.id) {
-      const saved = localStorage.getItem(`ymt_avatar_${user.id}`)
-      if (saved) setAvatarUrl(saved)
-    }
-  }, [user?.id])
+    if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
+  }, [user?.avatarUrl])
 
   useEffect(() => {
     if (!menuOpen) return

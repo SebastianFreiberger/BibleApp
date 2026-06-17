@@ -506,7 +506,7 @@ export function ProfilePage() {
   const { streak, activeDates } = useStreak()
   const t = UI_TEXT[lang]
 
-  const [activeSection, setActiveSection] = useState('favorites')
+  const [activeSection, setActiveSection] = useState('profile')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [avatarLoading, setAvatarLoading] = useState(false)
 
@@ -573,7 +573,6 @@ export function ProfilePage() {
                   ? initials
                   : <User size={18} strokeWidth={1.5} />
               }
-              <div className="ps-mini-avatar-edit"><Camera size={12} /></div>
             </div>
             <div className="ps-mini-info">
               <button className="ps-mini-name-btn" onClick={() => setActiveSection('profile')}>
