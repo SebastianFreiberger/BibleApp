@@ -4,7 +4,7 @@ import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
   User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Camera, Pencil, Sliders, Share2
+  Camera, Pencil, Sliders, Share2, Eye, EyeOff
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
@@ -349,28 +349,18 @@ function PlansSection({ lang }) {
 }
 
 // ── Profile Info Section ───────────────────────────────
-function ProfileInfoSection({ user, avatarUrl, avatarLoading, onAvatarChange, onSave, lang }) {
+function ProfileInfoSection({ user, onSave, lang }) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(user?.name || '')
   const [phone, setPhone] = useState(user?.phone || '')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const fileRef = useRef()
   const es = lang === 'es'
   const memberSince = getMemberSince(user?.createdAt, lang)
-
-  const handleFile = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    if (file.size > 3 * 1024 * 1024) {
-      setError(es ? 'La imagen no puede superar 3MB' : 'Image cannot exceed 3MB')
-      return
-    }
-    setError('')
-    onAvatarChange(file)
-  }
 
   const handleSave = () => {
     if (!name.trim()) { setError(es ? 'El nombre no puede estar vacío' : 'Name cannot be empty'); return }
@@ -384,6 +374,7 @@ function ProfileInfoSection({ user, avatarUrl, avatarLoading, onAvatarChange, on
     setEditing(false)
     setName(user?.name || ''); setPhone(user?.phone || '')
     setPassword(''); setConfirm(''); setError('')
+    setShowPassword(false); setShowConfirm(false)
   }
 
   return (
@@ -391,25 +382,6 @@ function ProfileInfoSection({ user, avatarUrl, avatarLoading, onAvatarChange, on
       <div className="ps-section-header">
         <User size={20} className="ps-section-icon icon-ver" />
         <h2>{es ? 'Mi perfil' : 'My profile'}</h2>
-      </div>
-
-      {/* Avatar */}
-      <div className="pi-avatar-wrap">
-        <div className={'pi-avatar' + (avatarLoading ? ' pi-avatar-loading' : '')}>
-          {avatarUrl
-            ? <img src={avatarUrl} alt="avatar" />
-            : user?.name
-              ? <span>{getInitials(user.name)}</span>
-              : <User size={36} strokeWidth={1.5} />
-          }
-          {avatarLoading
-            ? <div className="pi-avatar-spinner" />
-            : <button className="pi-avatar-edit" onClick={() => fileRef.current.click()} title={es ? 'Cambiar foto' : 'Change photo'}>
-                <Camera size={16} />
-              </button>
-          }
-        </div>
-        <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} hidden />
       </div>
 
       {/* Fields */}
@@ -446,19 +418,31 @@ function ProfileInfoSection({ user, avatarUrl, avatarLoading, onAvatarChange, on
           <>
             <div className="pi-field">
               <span className="pi-field-label">{es ? 'Nueva contraseña' : 'New password'}</span>
-              <input
-                className="pi-input" type="password"
-                placeholder={es ? 'Dejar vacío para no cambiar' : 'Leave empty to keep current'}
-                value={password} onChange={e => { setPassword(e.target.value); setError('') }}
-              />
+              <div className="pi-input-wrap">
+                <input
+                  className="pi-input pi-input-pw"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={es ? 'Dejar vacío para no cambiar' : 'Leave empty to keep current'}
+                  value={password} onChange={e => { setPassword(e.target.value); setError('') }}
+                />
+                <button type="button" className="pi-pw-toggle" onClick={() => setShowPassword(v => !v)} tabIndex={-1}>
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
             </div>
             {password && (
               <div className="pi-field">
                 <span className="pi-field-label">{es ? 'Confirmar contraseña' : 'Confirm password'}</span>
-                <input
-                  className="pi-input" type="password"
-                  value={confirm} onChange={e => { setConfirm(e.target.value); setError('') }}
-                />
+                <div className="pi-input-wrap">
+                  <input
+                    className="pi-input pi-input-pw"
+                    type={showConfirm ? 'text' : 'password'}
+                    value={confirm} onChange={e => { setConfirm(e.target.value); setError('') }}
+                  />
+                  <button type="button" className="pi-pw-toggle" onClick={() => setShowConfirm(v => !v)} tabIndex={-1}>
+                    {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
               </div>
             )}
           </>
@@ -606,9 +590,6 @@ export function ProfilePage() {
           {activeSection === 'profile' && (
             <ProfileInfoSection
               user={user}
-              avatarUrl={avatarUrl}
-              avatarLoading={avatarLoading}
-              onAvatarChange={handleAvatarChange}
               onSave={handleSaveProfile}
               lang={lang}
             />
