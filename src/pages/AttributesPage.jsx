@@ -9,7 +9,7 @@ import {
   HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
   Infinity, ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain,
   BookOpen, Gem, Anchor, Star, RefreshCw, Sunrise, Cross, HandHeart,
-  ChevronLeft, ChevronRight, Loader
+  ChevronLeft, ChevronRight, Loader, Share2
 } from 'lucide-react'
 
 const ICONS = {
@@ -153,19 +153,32 @@ export function AttributesPage() {
                 </div>
                 <div className="modal-verse-footer">
                   <p className="modal-reference">— {currentVerse.reference}</p>
-                  <button
-                    className={'modal-fav-btn' + (isFavorite(currentVerse.reference, currentVerse.text) ? ' active' : '')}
-                    onClick={() => isFavorite(currentVerse.reference, currentVerse.text)
-                      ? removeFavorite(currentVerse.reference, currentVerse.text)
-                      : addFavorite(currentVerse)
-                    }
-                    title={isFavorite(currentVerse.reference, currentVerse.text)
-                      ? (lang === 'es' ? 'Quitar de favoritos' : 'Remove from favorites')
-                      : (lang === 'es' ? 'Agregar a favoritos' : 'Add to favorites')
-                    }
-                  >
-                    <Heart size={18} fill={isFavorite(currentVerse.reference, currentVerse.text) ? 'currentColor' : 'none'} />
-                  </button>
+                  <div className="modal-verse-btns">
+                    <button
+                      className={'modal-fav-btn' + (isFavorite(currentVerse.reference, currentVerse.text) ? ' active' : '')}
+                      onClick={() => isFavorite(currentVerse.reference, currentVerse.text)
+                        ? removeFavorite(currentVerse.reference, currentVerse.text)
+                        : addFavorite(currentVerse)
+                      }
+                      title={isFavorite(currentVerse.reference, currentVerse.text)
+                        ? (lang === 'es' ? 'Quitar de favoritos' : 'Remove from favorites')
+                        : (lang === 'es' ? 'Agregar a favoritos' : 'Add to favorites')
+                      }
+                    >
+                      <Heart size={18} fill={isFavorite(currentVerse.reference, currentVerse.text) ? 'currentColor' : 'none'} />
+                    </button>
+                    <button
+                      className="modal-share-btn"
+                      onClick={async () => {
+                        const text = `"${currentVerse.text}"\n— ${currentVerse.reference}\n\nyourmessagetoday.vercel.app`
+                        if (navigator.share) { try { await navigator.share({ text }) } catch {} }
+                        else { await navigator.clipboard.writeText(text) }
+                      }}
+                      title={lang === 'es' ? 'Compartir' : 'Share'}
+                    >
+                      <Share2 size={18} />
+                    </button>
+                  </div>
                 </div>
 
                 {navInfo.total > 1 && (

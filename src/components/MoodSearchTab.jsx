@@ -1,4 +1,4 @@
-import { Search, Loader, ChevronDown, ChevronRight, Heart } from 'lucide-react'
+import { Search, Loader, ChevronDown, ChevronRight, Heart, Share2 } from 'lucide-react'
 import { MOOD_ICONS, MOOD_REFERENCES } from '../data'
 
 export function MoodSearchTab({
@@ -94,6 +94,15 @@ function MoodCategories({ lang, searchResult, loadingMood, selectMoodCategory })
   )
 }
 
+async function shareVerse(verse) {
+  const text = `"${verse.text}"\n— ${verse.reference}${verse.version ? ` (${verse.version})` : ''}\n\nyourmessagetoday.vercel.app`
+  if (navigator.share) {
+    try { await navigator.share({ text }) } catch {}
+  } else {
+    await navigator.clipboard.writeText(text)
+  }
+}
+
 function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse, addFavorite, removeFavorite, isFavorite }) {
   const es = lang === 'es'
   const categories = searchResult.categories?.length ? searchResult.categories : [searchResult.key]
@@ -142,6 +151,13 @@ function SearchResults({ lang, searchResult, expandedVerse, toggleExpandedVerse,
                       <Heart size={15} fill={faved ? 'currentColor' : 'none'} />
                     </button>
                   )}
+                  <button
+                    className="verse-share-btn"
+                    onClick={() => shareVerse(verse)}
+                    title={es ? 'Compartir' : 'Share'}
+                  >
+                    <Share2 size={15} />
+                  </button>
                   <span className="verse-item-toggle">
                     {expandedVerse === index ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                   </span>
