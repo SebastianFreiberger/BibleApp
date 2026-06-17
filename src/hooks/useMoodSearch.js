@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import Fuse from 'fuse.js'
 import { fetchMultipleVerses } from '../services'
-import { classifyMood } from '../services/gemini'
+import { classifyMood } from '../services/groq'
 import { MOOD_REFERENCES } from '../data'
 
 function shuffleArray(array) {
