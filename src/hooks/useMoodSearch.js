@@ -59,6 +59,15 @@ const FUSE_OPTIONS = {
   includeScore: true
 }
 
+// Palabras vacías que no aportan significado emocional
+const STOP_WORDS = new Set([
+  'estoy','siento','siento','poco','pero','porque','aunque','vez','hoy','que',
+  'una','uno','los','las','del','con','sin','por','para','como','muy','mas',
+  'bien','mal','algo','nada','todo','hay','hace','este','esta','ese','esa',
+  'the','and','but','because','feel','feeling','little','some','not','yet',
+  'am','is','are','was','were','have','has','been','today','when','also'
+])
+
 function fuseSearch(query, lang, fuseInstance) {
   const normalized = query.toLowerCase().trim()
   if (!normalized) return null
@@ -66,11 +75,18 @@ function fuseSearch(query, lang, fuseInstance) {
   let results = fuseInstance.search(normalized)
 
   if (results.length === 0 || results[0].score > 0.3) {
-    const words = normalized.split(/\s+/).filter(w => w.length >= 2)
-    let best = results[0] ?? null
+    // Solo buscar palabras con 5+ chars, sin puntuación, y que no sean stop words
+    const words = normalized
+      .replace(/[^a-záéíóúüñA-ZÁÉÍÓÚÜÑA-Za-z\s]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length >= 5 && !STOP_WORDS.has(w))
+
+    let best = null
     for (const word of words) {
       const r = fuseInstance.search(word)
-      if (r.length > 0 && (!best || r[0].score < best.score)) best = r[0]
+      if (r.length > 0 && r[0].score < 0.35 && (!best || r[0].score < best.score)) {
+        best = r[0]
+      }
     }
     if (best) results = [best]
   }

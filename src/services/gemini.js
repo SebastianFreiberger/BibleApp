@@ -75,7 +75,10 @@ Valid example: ["triste", "perdido"]`
         generationConfig: { temperature: 0.1, maxOutputTokens: 60 }
       })
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.warn('[Gemini] API error:', res.status, await res.text())
+      return null
+    }
     const data = await res.json()
     const raw = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
     if (!raw) return null
