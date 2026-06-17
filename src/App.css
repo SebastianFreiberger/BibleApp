@@ -615,6 +615,12 @@
   align-items: center;
   gap: 0.6rem;
 }
+.favorite-share-btn {
+  background: none; border: none; cursor: pointer; margin-left: auto;
+  color: #94a3b8; padding: 0.2rem; border-radius: 5px;
+  display: flex; align-items: center; transition: all 0.15s;
+}
+.favorite-share-btn:hover { color: #818cf8; background: rgba(129,140,248,0.1); }
 
 .favorite-reference {
   font-size: 0.78rem;

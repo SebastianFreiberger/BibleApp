@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { BookHeart, CalendarHeart, MessageCircleHeart,
          User, Heart, X, BookOpen, Book, Library, Search,
-         ChevronRight, Languages, LogOut } from 'lucide-react'
+         ChevronRight, Languages, LogOut, Share2 } from 'lucide-react'
 import { YMTLogo } from './YMTLogo'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -218,7 +218,7 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
       </div>
 
       {showFavorites && (
-        <FavoritesPanel favorites={favorites} t={t} onClose={() => setShowFavorites(false)} />
+        <FavoritesPanel favorites={favorites} t={t} lang={lang} onClose={() => setShowFavorites(false)} />
       )}
     </header>
   )
@@ -253,7 +253,13 @@ export function SearchTab({ t }) {
   )
 }
 
-function FavoritesPanel({ favorites, t, onClose }) {
+async function shareVerse(verse) {
+  const text = `"${verse.text}"\n— ${verse.reference}${verse.version ? ` (${verse.version})` : ''}\n\nyourmessagetoday.vercel.app`
+  if (navigator.share) { try { await navigator.share({ text }) } catch {} }
+  else { await navigator.clipboard.writeText(text) }
+}
+
+function FavoritesPanel({ favorites, t, lang, onClose }) {
   return (
     <div className="favorites-panel">
       <div className="favorites-panel-header">
@@ -280,6 +286,13 @@ function FavoritesPanel({ favorites, t, onClose }) {
               <div className="favorite-meta">
                 <span className="favorite-reference">— {verse.reference}</span>
                 {verse.version && <span className="favorite-version">{verse.version}</span>}
+                <button
+                  className="favorite-share-btn"
+                  onClick={() => shareVerse(verse)}
+                  title={lang === 'es' ? 'Compartir' : 'Share'}
+                >
+                  <Share2 size={13} />
+                </button>
               </div>
             </div>
           ))}

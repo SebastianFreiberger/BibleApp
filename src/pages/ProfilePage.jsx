@@ -57,7 +57,32 @@ async function shareFavorite(fav, lang) {
   }
 }
 
+function FavoriteModal({ fav, lang, onClose, onRemove }) {
+  const es = lang === 'es'
+  return (
+    <div className="fav-modal-overlay" onClick={onClose}>
+      <div className="fav-modal" onClick={e => e.stopPropagation()}>
+        <button className="fav-modal-close" onClick={onClose}>✕</button>
+        <div className="fav-modal-icon"><Heart size={28} fill="currentColor" /></div>
+        <p className="fav-modal-text">"{fav.text}"</p>
+        <p className="fav-modal-ref">— {fav.reference}{fav.version ? ` (${fav.version})` : ''}</p>
+        <button className="fav-modal-share" onClick={() => shareFavorite(fav, lang)}>
+          <Share2 size={18} />
+          {es ? 'Compartir versículo' : 'Share verse'}
+        </button>
+        <button className="fav-modal-remove" onClick={() => { onRemove(fav.reference, fav.text); onClose() }}>
+          <Trash2 size={15} />
+          {es ? 'Quitar de favoritos' : 'Remove from favorites'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function FavoritesSection({ favorites, removeFavorite, lang, t }) {
+  const [selectedFav, setSelectedFav] = useState(null)
+  const es = lang === 'es'
+
   return (
     <div className="ps-section">
       <div className="ps-section-header">
@@ -73,7 +98,7 @@ function FavoritesSection({ favorites, removeFavorite, lang, t }) {
       ) : (
         <div className="ps-fav-list">
           {favorites.map((fav, i) => (
-            <div key={i} className="ps-fav-card">
+            <div key={i} className="ps-fav-card" onClick={() => setSelectedFav(fav)} style={{ cursor: 'pointer' }}>
               <div className="ps-fav-body">
                 <p className="ps-fav-text">"{fav.text}"</p>
                 <div className="ps-fav-meta">
@@ -81,11 +106,11 @@ function FavoritesSection({ favorites, removeFavorite, lang, t }) {
                   {fav.version && <span className="ps-fav-version">{fav.version}</span>}
                 </div>
               </div>
-              <div className="ps-fav-actions">
+              <div className="ps-fav-actions" onClick={e => e.stopPropagation()}>
                 <button
                   className="ps-fav-share"
                   onClick={() => shareFavorite(fav, lang)}
-                  title={lang === 'es' ? 'Compartir' : 'Share'}
+                  title={es ? 'Compartir' : 'Share'}
                 >
                   <Share2 size={14} />
                 </button>
@@ -100,6 +125,15 @@ function FavoritesSection({ favorites, removeFavorite, lang, t }) {
             </div>
           ))}
         </div>
+      )}
+
+      {selectedFav && (
+        <FavoriteModal
+          fav={selectedFav}
+          lang={lang}
+          onClose={() => setSelectedFav(null)}
+          onRemove={(ref, text) => { removeFavorite(ref, text); setSelectedFav(null) }}
+        />
       )}
     </div>
   )
