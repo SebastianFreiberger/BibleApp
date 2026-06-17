@@ -20,7 +20,9 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
   const [showFavorites, setShowFavorites] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const navRef = useRef()
+  const userMenuRef = useRef()
 
   useEffect(() => {
     if (user?.id) {
@@ -32,13 +34,20 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
   useEffect(() => {
     if (!menuOpen) return
     const handleClick = (e) => {
-      if (navRef.current && !navRef.current.contains(e.target)) {
-        setMenuOpen(false)
-      }
+      if (navRef.current && !navRef.current.contains(e.target)) setMenuOpen(false)
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [menuOpen])
+
+  useEffect(() => {
+    if (!userMenuOpen) return
+    const handleClick = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setUserMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [userMenuOpen])
 
   const raw = new Date().toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -74,17 +83,29 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
           </button>
 
           {isAuthenticated ? (
-            <Link to="/perfil" className="nav-user-btn">
-              <div className="nav-user-avatar">
-                {avatarUrl
-                  ? <img src={avatarUrl} alt="avatar" />
-                  : user?.name
-                    ? <span>{getInitials(user.name)}</span>
-                    : <User size={18} strokeWidth={1.5} />
-                }
-              </div>
-              <span className="nav-user-name">{user?.name?.split(' ')[0]}</span>
-            </Link>
+            <div className="nav-user-wrap" ref={userMenuRef}>
+              <button className="nav-user-btn" onClick={() => setUserMenuOpen(o => !o)}>
+                <div className="nav-user-avatar">
+                  {avatarUrl
+                    ? <img src={avatarUrl} alt="avatar" />
+                    : user?.name
+                      ? <span>{getInitials(user.name)}</span>
+                      : <User size={18} strokeWidth={1.5} />
+                  }
+                </div>
+                <span className="nav-user-name">{user?.name?.split(' ')[0]}</span>
+              </button>
+              {userMenuOpen && (
+                <div className="user-dropdown">
+                  <Link to="/perfil" className="user-dropdown-item" onClick={() => setUserMenuOpen(false)}>
+                    <User size={14} /> {lang === 'es' ? 'Ver perfil' : 'View profile'}
+                  </Link>
+                  <button className="user-dropdown-item user-dropdown-logout" onClick={() => { logout(); setUserMenuOpen(false) }}>
+                    <LogOut size={14} /> {lang === 'es' ? 'Cerrar sesión' : 'Log out'}
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <Link to="/login" className="nav-login-btn">
               <User size={15} />
