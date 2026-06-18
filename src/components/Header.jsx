@@ -14,7 +14,7 @@ function getInitials(name = '') {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTabClick, favorites = [], t }) {
+export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTabClick, favorites = [], newFavsCount = 0, markFavsSeen, t }) {
   const { user, isAuthenticated, logout } = useAuth()
   const { lang, setLang } = useLang()
   const [showFavorites, setShowFavorites] = useState(false)
@@ -72,11 +72,11 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
 
           <button
             className={'nav-fav-btn' + (showFavorites ? ' active' : '')}
-            onClick={() => setShowFavorites(o => !o)}
+            onClick={() => { setShowFavorites(o => !o); markFavsSeen?.() }}
             title={t.favorites}
           >
             <Heart size={17} fill={favorites.length > 0 ? 'currentColor' : 'none'} />
-            {favorites.length > 0 && <span className="nav-fav-badge">{favorites.length}</span>}
+            {newFavsCount > 0 && <span className="nav-fav-badge">{newFavsCount}</span>}
           </button>
 
           {isAuthenticated ? (
@@ -170,7 +170,7 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
           {/* Favoritos */}
           <button
             className={'mmp-item' + (showFavorites ? ' active' : '')}
-            onClick={() => { setShowFavorites(o => !o); setMenuOpen(false) }}
+            onClick={() => { setShowFavorites(o => !o); setMenuOpen(false); markFavsSeen?.() }}
           >
             <div className="mmp-icon-wrap mmp-icon-fav">
               <Heart size={16} fill={favorites.length > 0 ? 'currentColor' : 'none'} />
@@ -178,7 +178,7 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
             <div className="mmp-item-text">
               <span className="mmp-item-name">{t.favorites}</span>
             </div>
-            {favorites.length > 0 && <span className="mmp-badge">{favorites.length}</span>}
+            {newFavsCount > 0 && <span className="mmp-badge">{newFavsCount}</span>}
           </button>
 
           <div className="mmp-sep" />

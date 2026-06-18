@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Header, Footer, DailyVerseTab, MoodSearchTab } from '../components'
-import { useTheme, useDailyVerse, useMoodSearch, useFavorites } from '../hooks'
+import { useTheme, useDailyVerse, useMoodSearch, useFavorites, useNewFavsCount } from '../hooks'
 import { UI_TEXT, getDailyAttribute } from '../data'
 import { useLang } from '../context'
 
@@ -31,7 +31,8 @@ export function HomePage() {
     toggleExpandedVerse
   } = useMoodSearch(lang, bibleVersion)
 
-  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const { favorites, addFavorite, removeFavorite, isFavorite, userId } = useFavorites()
+  const { newFavsCount, markFavsSeen } = useNewFavsCount(favorites, userId)
 
   const dailyAttribute = useMemo(() => getDailyAttribute(lang), [lang])
 
@@ -54,6 +55,8 @@ export function HomePage() {
         setActiveTab={setActiveTab}
         onDailyTabClick={backToDaily}
         favorites={favorites}
+        newFavsCount={newFavsCount}
+        markFavsSeen={markFavsSeen}
         t={t}
       />
 

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
-import { useTheme, useFavorites, useStreak } from '../hooks'
+import { useTheme, useFavorites, useStreak, useNewFavsCount } from '../hooks'
 import { UI_TEXT, BIBLE_VERSIONS } from '../data'
 import { Footer, ScrollToTop } from '../components'
 
@@ -505,44 +505,22 @@ export function ProfilePage() {
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
 
-  const { favorites, removeFavorite } = useFavorites()
+  const { favorites, removeFavorite, userId } = useFavorites()
   const { streak, activeDates } = useStreak()
   const t = UI_TEXT[lang]
 
   const [activeSection, setActiveSection] = useState('profile')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [avatarLoading, setAvatarLoading] = useState(false)
-  const [favsSeenAt, setFavsSeenAt] = useState(null)
+  const { newFavsCount, markFavsSeen } = useNewFavsCount(favorites, userId)
 
   useEffect(() => {
     if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
   }, [user?.avatarUrl])
 
-  useEffect(() => {
-    if (!user?.id) return
-    const key = `ymt_favs_seen_${user.id}`
-    const stored = localStorage.getItem(key)
-    if (stored) {
-      setFavsSeenAt(stored)
-    } else {
-      const now = new Date().toISOString()
-      localStorage.setItem(key, now)
-      setFavsSeenAt(now)
-    }
-  }, [user?.id])
-
-  const newFavsCount = useMemo(() => {
-    if (!favsSeenAt) return 0
-    return favorites.filter(f => new Date(f.created_at) > new Date(favsSeenAt)).length
-  }, [favorites, favsSeenAt])
-
   const handleSectionClick = (id) => {
     setActiveSection(id)
-    if (id === 'favorites' && user?.id) {
-      const now = new Date().toISOString()
-      localStorage.setItem(`ymt_favs_seen_${user.id}`, now)
-      setFavsSeenAt(now)
-    }
+    if (id === 'favorites') markFavsSeen()
   }
 
   const handleAvatarChange = async (file) => {

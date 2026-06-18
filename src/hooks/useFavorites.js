@@ -44,5 +44,5 @@ export function useFavorites() {
     return favorites.some(f => f.reference === reference && f.text === text)
   }, [favorites])
 
-  return { favorites, addFavorite, removeFavorite, isFavorite }
+  return { favorites, addFavorite, removeFavorite, isFavorite, userId }
 }
