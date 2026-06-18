@@ -318,8 +318,8 @@ function FavoritesPanel({ favorites, t, lang, onClose }) {
       )}
 
       <div className="favorites-panel-footer">
-        <Link to="/perfil" className="favorites-goto-profile" onClick={onClose}>
-          <span>{t.recentFavoritesTitle}</span>
+        <Link to="/perfil" state={{ section: 'favorites' }} className="favorites-goto-profile" onClick={onClose}>
+          <span>{lang === 'es' ? 'Ver todos los favoritos' : 'View all favorites'}</span>
           <ChevronRight size={15} />
         </Link>
       </div>

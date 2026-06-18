@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
@@ -504,12 +504,13 @@ export function ProfilePage() {
   const { user, isAuthenticated, loading, logout, updateProfile, updateAvatar } = useAuth()
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
+  const location = useLocation()
 
   const { favorites, removeFavorite, userId } = useFavorites()
   const { streak, activeDates } = useStreak()
   const t = UI_TEXT[lang]
 
-  const [activeSection, setActiveSection] = useState('profile')
+  const [activeSection, setActiveSection] = useState(location.state?.section || 'profile')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [avatarLoading, setAvatarLoading] = useState(false)
   const { newFavsCount, markFavsSeen } = useNewFavsCount(favorites, userId)
