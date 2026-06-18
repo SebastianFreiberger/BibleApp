@@ -532,6 +532,10 @@ export function ProfilePage() {
 
   return (
     <div className="profile-page">
+      <div className="pp-orb pp-orb-1" />
+      <div className="pp-orb pp-orb-2" />
+      <div className="pp-orb pp-orb-3" />
+
       {/* ── Top bar ───────────────────────────────── */}
       <nav className="bible-topbar">
         <div className="bible-topbar-left">
@@ -554,29 +558,21 @@ export function ProfilePage() {
 
         {/* Sidebar */}
         <aside className="profile-sidebar">
-          {/* Mini profile */}
-          <div className="ps-mini-profile">
-            <div className="ps-mini-avatar" onClick={() => setActiveSection('profile')}>
+          {/* Hero */}
+          <div className="ps-hero">
+            <div className="ps-hero-avatar" onClick={() => setActiveSection('profile')}>
               {avatarUrl
                 ? <img src={avatarUrl} alt="avatar" />
                 : initials
                   ? initials
-                  : <User size={18} strokeWidth={1.5} />
+                  : <User size={24} strokeWidth={1.5} />
               }
             </div>
-            <div className="ps-mini-info">
-              <button className="ps-mini-name-btn" onClick={() => setActiveSection('profile')}>
-                {user?.name} <Pencil size={12} />
-              </button>
-              {memberSince && (
-                <span className="ps-mini-since">
-                  <User size={11} /> {memberSince}
-                </span>
-              )}
-            </div>
+            <button className="ps-hero-name" onClick={() => setActiveSection('profile')}>
+              {user?.name?.split(' ')[0]} <Pencil size={11} />
+            </button>
+            {memberSince && <span className="ps-hero-since">{memberSince}</span>}
           </div>
-
-          <div className="ps-nav-divider" />
 
           {/* Navigation */}
           <nav className="ps-nav">
@@ -593,6 +589,7 @@ export function ProfilePage() {
 
         {/* Content */}
         <main className="profile-content">
+          <div key={activeSection} className="ps-section-enter">
           {activeSection === 'profile' && (
             <ProfileInfoSection
               user={user}
@@ -618,6 +615,7 @@ export function ProfilePage() {
           {activeSection === 'plans' && (
             <PlansSection lang={lang} />
           )}
+          </div>
         </main>
       </div>
       <Footer />
