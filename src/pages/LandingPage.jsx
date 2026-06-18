@@ -8,7 +8,7 @@ import { YMTLogo } from '../components/YMTLogo'
 import {
   CalendarHeart, MessageCircleHeart, Library, Crown,
   BookOpen, Heart, Star, ArrowRight, ArrowUp,
-  UserPlus, ChevronDown, BookMarked, Flame
+  UserPlus, ChevronDown, BookMarked, Flame, Share2
 } from 'lucide-react'
 
 const DAILY_REF_ES = 'Isaias:33:2'
@@ -77,6 +77,15 @@ const FEATURES = [
     titleEn: 'Save your favorites',
     descEs: 'Marcá los versículos que más te tocan y encontralos siempre desde tu perfil.',
     descEn: 'Bookmark the verses that touch you most and find them anytime from your profile.',
+  },
+  {
+    icon: Share2,
+    color: '#06b6d4',
+    bg: 'rgba(6,182,212,0.1)',
+    titleEs: 'Compartí tu fe',
+    titleEn: 'Share your faith',
+    descEs: 'Enviá el versículo que te llegó al corazón a quien más querés, en un solo tap.',
+    descEn: 'Send the verse that moved your heart to the people you love, in just one tap.',
   },
 ]
 
