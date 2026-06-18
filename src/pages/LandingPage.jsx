@@ -202,6 +202,59 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ── Story ── */}
+      <section className="landing-story">
+        <div className="landing-story-inner">
+          <p className="landing-story-eyebrow">
+            {es ? 'El nombre lo dice todo' : 'The name says it all'}
+          </p>
+          <h2 className="landing-story-name">Your Message Today</h2>
+          <div className="landing-story-abbr">
+            <span>Y</span><span>M</span><span>T</span>
+          </div>
+          <div className="landing-story-body">
+            {es ? (
+              <>
+                <p>
+                  El nombre no es casualidad. Cada día, en el momento exacto, existe un versículo
+                  que no fue escrito para todos — fue escrito para <em>vos</em>.
+                  El que necesitás hoy. El que habla a lo que estás viviendo ahora.
+                </p>
+                <p>
+                  YMT nació de una convicción simple pero profunda: la Palabra de Dios
+                  no es un texto del pasado guardado en un libro polvoriento.
+                  Es un mensaje <em>vivo</em>, presente y personal —
+                  y hoy, en este momento, tiene algo que decirte a vos.
+                </p>
+                <p className="landing-story-closing">
+                  Cada mañana trae un mensaje nuevo. Cada búsqueda, una respuesta.
+                  Cada favorito guardado, un recordatorio de que fuiste encontrado por algo más grande.
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  The name is no coincidence. Every day, at the exact right moment,
+                  there's a verse that wasn't written for everyone — it was written for <em>you</em>.
+                  The one you need today. The one that speaks to what you're living right now.
+                </p>
+                <p>
+                  YMT was born from a simple but profound conviction: God's Word is not
+                  a text from the past sitting in a dusty book.
+                  It is a <em>living</em>, present, personal message —
+                  and today, in this very moment, it has something to say to you.
+                </p>
+                <p className="landing-story-closing">
+                  Every morning brings a new message. Every search, an answer.
+                  Every verse saved, a reminder that you were found by something greater.
+                </p>
+              </>
+            )}
+          </div>
+          <div className="landing-story-quote-mark">"</div>
+        </div>
+      </section>
+
       {/* ── Features ── */}
       <section className="landing-features">
         <h2 className="landing-section-title">
