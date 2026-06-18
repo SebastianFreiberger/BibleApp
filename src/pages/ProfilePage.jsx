@@ -87,7 +87,7 @@ function FavoritesSection({ favorites, removeFavorite, lang, t }) {
     <div className="ps-section">
       <div className="ps-section-header">
         <Heart size={20} className="ps-section-icon icon-fav" />
-        <h2>{t.recentFavoritesTitle}</h2>
+        <h2>{lang === 'es' ? 'Favoritos' : 'Favorites'}</h2>
         <span className="ps-badge">{favorites.length}</span>
       </div>
       {favorites.length === 0 ? (
@@ -499,10 +499,38 @@ export function ProfilePage() {
   const [activeSection, setActiveSection] = useState('profile')
   const [avatarUrl, setAvatarUrl] = useState(null)
   const [avatarLoading, setAvatarLoading] = useState(false)
+  const [favsSeenAt, setFavsSeenAt] = useState(null)
 
   useEffect(() => {
     if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
   }, [user?.avatarUrl])
+
+  useEffect(() => {
+    if (!user?.id) return
+    const key = `ymt_favs_seen_${user.id}`
+    const stored = localStorage.getItem(key)
+    if (stored) {
+      setFavsSeenAt(stored)
+    } else {
+      const now = new Date().toISOString()
+      localStorage.setItem(key, now)
+      setFavsSeenAt(now)
+    }
+  }, [user?.id])
+
+  const newFavsCount = useMemo(() => {
+    if (!favsSeenAt) return 0
+    return favorites.filter(f => new Date(f.created_at) > new Date(favsSeenAt)).length
+  }, [favorites, favsSeenAt])
+
+  const handleSectionClick = (id) => {
+    setActiveSection(id)
+    if (id === 'favorites' && user?.id) {
+      const now = new Date().toISOString()
+      localStorage.setItem(`ymt_favs_seen_${user.id}`, now)
+      setFavsSeenAt(now)
+    }
+  }
 
   const handleAvatarChange = async (file) => {
     setAvatarLoading(true)
@@ -522,12 +550,12 @@ export function ProfilePage() {
   if (!isAuthenticated) return <Navigate to="/login" />
 
   const navItems = [
-    { id: 'profile',   icon: User,          label: lang === 'es' ? 'Mi perfil' : 'My profile' },
-    { id: 'favorites', icon: Heart,         label: t.recentFavoritesTitle, badge: favorites.length || null },
-    { id: 'stats',     icon: BarChart2,     label: t.statsTitle },
-    { id: 'preferences', icon: Sliders,      label: lang === 'es' ? 'Preferencias' : 'Preferences' },
-    { id: 'calendar',  icon: CalendarDays,  label: lang === 'es' ? 'Calendario' : 'Calendar' },
-    { id: 'plans',     icon: BookMarked,    label: lang === 'es' ? 'Planes de lectura' : 'Reading plans' },
+    { id: 'profile',     icon: User,        label: lang === 'es' ? 'Mi perfil' : 'My profile' },
+    { id: 'favorites',   icon: Heart,       label: lang === 'es' ? 'Favoritos' : 'Favorites', badge: newFavsCount || null },
+    { id: 'stats',       icon: BarChart2,   label: t.statsTitle },
+    { id: 'preferences', icon: Sliders,     label: lang === 'es' ? 'Preferencias' : 'Preferences' },
+    { id: 'calendar',    icon: CalendarDays,label: lang === 'es' ? 'Calendario' : 'Calendar' },
+    { id: 'plans',       icon: BookMarked,  label: lang === 'es' ? 'Planes de lectura' : 'Reading plans' },
   ]
 
   return (
@@ -581,7 +609,7 @@ export function ProfilePage() {
                 key={item.id}
                 {...item}
                 active={activeSection === item.id}
-                onClick={setActiveSection}
+                onClick={handleSectionClick}
               />
             ))}
           </nav>
