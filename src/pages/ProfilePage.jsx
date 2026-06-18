@@ -79,52 +79,65 @@ function FavoriteModal({ fav, lang, onClose, onRemove }) {
   )
 }
 
+function FavCard({ fav, lang, es, onSelect, onShare, onRemove, removeFavoriteLabel }) {
+  return (
+    <div className="ps-fav-card" onClick={() => onSelect(fav)}>
+      <div className="ps-fav-body">
+        <p className="ps-fav-text">"{fav.text}"</p>
+        <div className="ps-fav-meta">
+          <span className="ps-fav-ref">— {fav.reference}</span>
+          {fav.version && <span className="ps-fav-version">{fav.version}</span>}
+        </div>
+      </div>
+      <div className="ps-fav-actions" onClick={e => e.stopPropagation()}>
+        <button className="ps-fav-share" onClick={() => onShare(fav)} title={es ? 'Compartir' : 'Share'}>
+          <Share2 size={14} />
+        </button>
+        <button className="ps-fav-remove" onClick={() => onRemove(fav.reference, fav.text)} title={removeFavoriteLabel}>
+          <Trash2 size={15} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function FavoritesSection({ favorites, removeFavorite, lang, t }) {
   const [selectedFav, setSelectedFav] = useState(null)
   const es = lang === 'es'
+  const recent = favorites.slice(0, 3)
+  const hasMore = favorites.length > 3
+
+  const cardProps = { lang, es, onSelect: setSelectedFav, onShare: (fav) => shareFavorite(fav, lang), onRemove: removeFavorite, removeFavoriteLabel: t.removeFavorite }
 
   return (
     <div className="ps-section">
       <div className="ps-section-header">
         <Heart size={20} className="ps-section-icon icon-fav" />
-        <h2>{lang === 'es' ? 'Favoritos' : 'Favorites'}</h2>
+        <h2>{es ? 'Favoritos' : 'Favorites'}</h2>
         <span className="ps-badge">{favorites.length}</span>
       </div>
+
       {favorites.length === 0 ? (
         <div className="ps-empty">
           <Heart size={36} strokeWidth={1.5} />
           <p>{t.noFavoritesProfile}</p>
         </div>
       ) : (
-        <div className="ps-fav-list">
-          {favorites.map((fav, i) => (
-            <div key={i} className="ps-fav-card" onClick={() => setSelectedFav(fav)} style={{ cursor: 'pointer' }}>
-              <div className="ps-fav-body">
-                <p className="ps-fav-text">"{fav.text}"</p>
-                <div className="ps-fav-meta">
-                  <span className="ps-fav-ref">— {fav.reference}</span>
-                  {fav.version && <span className="ps-fav-version">{fav.version}</span>}
-                </div>
+        <>
+          <p className="ps-fav-group-label">{es ? 'Recientes' : 'Recent'}</p>
+          <div className="ps-fav-grid">
+            {recent.map(fav => <FavCard key={fav.id} {...cardProps} fav={fav} />)}
+          </div>
+
+          {hasMore && (
+            <>
+              <p className="ps-fav-group-label ps-fav-group-label-mt">{es ? 'Todos los favoritos' : 'All favorites'}</p>
+              <div className="ps-fav-grid">
+                {favorites.map(fav => <FavCard key={fav.id} {...cardProps} fav={fav} />)}
               </div>
-              <div className="ps-fav-actions" onClick={e => e.stopPropagation()}>
-                <button
-                  className="ps-fav-share"
-                  onClick={() => shareFavorite(fav, lang)}
-                  title={es ? 'Compartir' : 'Share'}
-                >
-                  <Share2 size={14} />
-                </button>
-                <button
-                  className="ps-fav-remove"
-                  onClick={() => removeFavorite(fav.reference, fav.text)}
-                  title={t.removeFavorite}
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            </>
+          )}
+        </>
       )}
 
       {selectedFav && (
