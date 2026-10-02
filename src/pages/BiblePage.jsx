@@ -23,9 +23,12 @@ export function BiblePage() {
 
   useEffect(() => {
     if (view !== 'reading' || !selectedBook) return
-    setLoading(true)
-    setError(false)
-    setVerses([])
+    function startLoading() {
+      setLoading(true)
+      setError(false)
+      setVerses([])
+    }
+    startLoading()
     fetchChapter(selectedBook.key, selectedChapter, lang, bibleVersion)
       .then(data => {
         if (data.length === 0) setError(true)

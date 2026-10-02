@@ -1,12 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Crown, Sparkles } from 'lucide-react'
-import { useLang } from '../context/LangContext'
+import { useLang } from '../context/hooks'
 
 export function GodAttributeCard({ attribute, t }) {
   const { lang } = useLang()
   if (!attribute) return null
-
-  const seeMoreText = lang === 'es' ? 'Ver más' : 'See more'
 
   const titleText = lang === 'es' ? 'Conocé más sobre Dios' : 'Learn more about God'
 

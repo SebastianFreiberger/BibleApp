@@ -16,13 +16,16 @@ export function useFavorites() {
   }, [])
 
   useEffect(() => {
-    if (!userId) { setFavorites([]); return }
-    supabase
-      .from('favorites')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .then(({ data }) => setFavorites(data ?? []))
+    async function loadFavorites() {
+      if (!userId) { setFavorites([]); return }
+      const { data } = await supabase
+        .from('favorites')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+      setFavorites(data ?? [])
+    }
+    loadFavorites()
   }, [userId])
 
   const addFavorite = useCallback(async (verse) => {

@@ -7,16 +7,21 @@ import { Footer, ScrollToTop } from '../components'
 import {
   ArrowLeft, Crown, Shield, Heart, Sparkles, Scale, Zap, Globe, Gift,
   HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
-  Infinity, ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain,
+  Infinity as InfinityIcon, ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain,
   BookOpen, Gem, Anchor, Star, RefreshCw, Sunrise, Cross, HandHeart,
   ChevronLeft, ChevronRight, Loader, Share2
 } from 'lucide-react'
 
 const ICONS = {
   Shield, Heart, HandHeart, Sparkles, Scale, Zap, Globe, Gift, HeartPulse,
-  CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette, Infinity,
+  CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette, Infinity: InfinityIcon,
   ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain, BookOpen,
   Gem, Anchor, Crown, Star, RefreshCw, Sunrise, Cross
+}
+
+function IconComponent({ iconName, size = 32 }) {
+  const Icon = ICONS[iconName]
+  return Icon ? <Icon size={size} /> : <Star size={size} />
 }
 
 export function AttributesPage() {
@@ -31,7 +36,10 @@ export function AttributesPage() {
 
   // Limpiar selección al cambiar idioma o versión para forzar recarga
   useEffect(() => {
-    setSelectedAttribute(null)
+    function reset() {
+      setSelectedAttribute(null)
+    }
+    reset()
   }, [lang, bibleVersion])
 
   // Cargar versículo cuando se selecciona un atributo
@@ -65,11 +73,6 @@ export function AttributesPage() {
     if (selectedAttribute) {
       goToNext(selectedAttribute.id)
     }
-  }
-
-  const IconComponent = ({ iconName, size = 32 }) => {
-    const Icon = ICONS[iconName]
-    return Icon ? <Icon size={size} /> : <Star size={size} />
   }
 
   const currentVerse = selectedAttribute ? getCurrentVerse(selectedAttribute.id) : null
@@ -171,7 +174,7 @@ export function AttributesPage() {
                       className="modal-share-btn"
                       onClick={async () => {
                         const text = `"${currentVerse.text}"\n— ${currentVerse.reference}\n\nyourmessagetoday.vercel.app`
-                        if (navigator.share) { try { await navigator.share({ text }) } catch {} }
+                        if (navigator.share) { try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ } }
                         else { await navigator.clipboard.writeText(text) }
                       }}
                       title={lang === 'es' ? 'Compartir' : 'Share'}

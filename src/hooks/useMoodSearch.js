@@ -108,9 +108,12 @@ export function useMoodSearch(lang, bibleVersion) {
   }, [lang])
 
   useEffect(() => {
-    setSearchResult(null)
-    setSearchQuery('')
-    setHasSearched(false)
+    function reset() {
+      setSearchResult(null)
+      setSearchQuery('')
+      setHasSearched(false)
+    }
+    reset()
   }, [lang, bibleVersion])
 
   const handleSearch = async (e) => {

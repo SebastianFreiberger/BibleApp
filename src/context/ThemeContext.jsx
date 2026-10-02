@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../services/supabase'
-
-const ThemeContext = createContext(null)
+import { ThemeContext } from './contexts'
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
@@ -29,10 +28,4 @@ export function ThemeProvider({ children }) {
       {children}
     </ThemeContext.Provider>
   )
-}
-
-export function useTheme() {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useTheme debe usarse dentro de ThemeProvider')
-  return ctx
 }

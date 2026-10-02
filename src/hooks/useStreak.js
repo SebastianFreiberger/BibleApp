@@ -6,11 +6,8 @@ export function useStreak() {
   const [activeDates, setActiveDates] = useState([])
 
   useEffect(() => {
-    let userId = null
-
     const init = async (uid) => {
       if (!uid) { setStreak(0); setActiveDates([]); return }
-      userId = uid
       const today = new Date().toISOString().split('T')[0]
 
       // Registrar hoy si no existe

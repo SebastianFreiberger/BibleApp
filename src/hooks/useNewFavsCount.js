@@ -4,16 +4,19 @@ export function useNewFavsCount(favorites, userId) {
   const [seenAt, setSeenAt] = useState(null)
 
   useEffect(() => {
-    if (!userId) return
-    const key = `ymt_favs_seen_${userId}`
-    const stored = localStorage.getItem(key)
-    if (stored) {
-      setSeenAt(stored)
-    } else {
-      const now = new Date().toISOString()
-      localStorage.setItem(key, now)
-      setSeenAt(now)
+    function init() {
+      if (!userId) return
+      const key = `ymt_favs_seen_${userId}`
+      const stored = localStorage.getItem(key)
+      if (stored) {
+        setSeenAt(stored)
+      } else {
+        const now = new Date().toISOString()
+        localStorage.setItem(key, now)
+        setSeenAt(now)
+      }
     }
+    init()
   }, [userId])
 
   const newFavsCount = useMemo(() => {

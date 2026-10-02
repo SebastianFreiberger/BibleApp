@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
@@ -48,10 +48,10 @@ const MONTHS_EN = ['January','February','March','April','May','June','July','Aug
 
 // ── Section components ─────────────────────────────────
 
-async function shareFavorite(fav, lang) {
+async function shareFavorite(fav) {
   const text = `"${fav.text}"\n— ${fav.reference}${fav.version ? ` (${fav.version})` : ''}\n\nyourmessagetoday.vercel.app`
   if (navigator.share) {
-    try { await navigator.share({ text }) } catch {}
+    try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ }
   } else {
     await navigator.clipboard.writeText(text)
   }
@@ -66,7 +66,7 @@ function FavoriteModal({ fav, lang, onClose, onRemove }) {
         <div className="fav-modal-icon"><Heart size={28} fill="currentColor" /></div>
         <p className="fav-modal-text">"{fav.text}"</p>
         <p className="fav-modal-ref">— {fav.reference}{fav.version ? ` (${fav.version})` : ''}</p>
-        <button className="fav-modal-share" onClick={() => shareFavorite(fav, lang)}>
+        <button className="fav-modal-share" onClick={() => shareFavorite(fav)}>
           <Share2 size={18} />
           {es ? 'Compartir versículo' : 'Share verse'}
         </button>
@@ -79,7 +79,7 @@ function FavoriteModal({ fav, lang, onClose, onRemove }) {
   )
 }
 
-function FavCard({ fav, lang, es, onSelect, onShare, onRemove, removeFavoriteLabel }) {
+function FavCard({ fav, es, onSelect, onShare, onRemove, removeFavoriteLabel }) {
   return (
     <div className="ps-fav-card" onClick={() => onSelect(fav)}>
       <div className="ps-fav-body">
@@ -107,7 +107,7 @@ function FavoritesSection({ favorites, removeFavorite, lang, t }) {
   const recent = favorites.slice(0, 3)
   const hasMore = favorites.length > 3
 
-  const cardProps = { lang, es, onSelect: setSelectedFav, onShare: (fav) => shareFavorite(fav, lang), onRemove: removeFavorite, removeFavoriteLabel: t.removeFavorite }
+  const cardProps = { es, onSelect: setSelectedFav, onShare: shareFavorite, onRemove: removeFavorite, removeFavoriteLabel: t.removeFavorite }
 
   return (
     <div className="ps-section">
@@ -187,7 +187,7 @@ function StatsSection({ favorites, streak, lang, bibleVersion, t }) {
   )
 }
 
-function PreferencesSection({ lang, bibleVersion, setBibleVersion, theme, toggleTheme, t }) {
+function PreferencesSection({ lang, bibleVersion, setBibleVersion, theme, toggleTheme }) {
   const es = lang === 'es'
   const versions = BIBLE_VERSIONS[lang] || []
   return (
@@ -486,7 +486,8 @@ function ProfileInfoSection({ user, onSave, lang }) {
 
 
 // ── Sidebar nav items ──────────────────────────────────
-function SidebarItem({ id, icon: Icon, label, active, badge, onClick }) {
+function SidebarItem({ id, icon, label, active, badge, onClick }) {
+  const Icon = icon
   return (
     <button
       className={'ps-nav-item' + (active ? ' active' : '')}
@@ -501,7 +502,7 @@ function SidebarItem({ id, icon: Icon, label, active, badge, onClick }) {
 
 // ── Main component ─────────────────────────────────────
 export function ProfilePage() {
-  const { user, isAuthenticated, loading, logout, updateProfile, updateAvatar } = useAuth()
+  const { user, isAuthenticated, loading, logout, updateProfile } = useAuth()
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
@@ -511,24 +512,12 @@ export function ProfilePage() {
   const t = UI_TEXT[lang]
 
   const [activeSection, setActiveSection] = useState(location.state?.section || 'profile')
-  const [avatarUrl, setAvatarUrl] = useState(null)
-  const [avatarLoading, setAvatarLoading] = useState(false)
+  const avatarUrl = user?.avatarUrl
   const { newFavsCount, markFavsSeen } = useNewFavsCount(favorites, userId)
-
-  useEffect(() => {
-    if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
-  }, [user?.avatarUrl])
 
   const handleSectionClick = (id) => {
     setActiveSection(id)
     if (id === 'favorites') markFavsSeen()
-  }
-
-  const handleAvatarChange = async (file) => {
-    setAvatarLoading(true)
-    const { success, avatarUrl: url, error } = await updateAvatar(file)
-    if (success) setAvatarUrl(url)
-    setAvatarLoading(false)
   }
 
   const handleSaveProfile = ({ name, phone, password }) => {
@@ -626,7 +615,7 @@ export function ProfilePage() {
           {activeSection === 'preferences' && (
             <PreferencesSection
               lang={lang} bibleVersion={bibleVersion} setBibleVersion={setBibleVersion}
-              theme={theme} toggleTheme={toggleTheme} t={t}
+              theme={theme} toggleTheme={toggleTheme}
             />
           )}
           {activeSection === 'calendar' && (

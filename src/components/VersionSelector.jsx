@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { BookOpen, ChevronDown, Check } from 'lucide-react'
-import { useLang } from '../context/LangContext'
+import { useLang } from '../context/hooks'
 import { BIBLE_VERSIONS } from '../data/bibleData'
 
 export function VersionSelector({ t }) {

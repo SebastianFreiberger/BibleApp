@@ -4,8 +4,7 @@ import { BookHeart, CalendarHeart, MessageCircleHeart,
          ChevronRight, Languages, LogOut, Share2 } from 'lucide-react'
 import { YMTLogo } from './YMTLogo'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useLang } from '../context/LangContext'
+import { useAuth, useLang } from '../context/hooks'
 import { VersionSelector } from './VersionSelector'
 
 function getInitials(name = '') {
@@ -14,19 +13,15 @@ function getInitials(name = '') {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
 
-export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTabClick, favorites = [], newFavsCount = 0, markFavsSeen, t }) {
+export function Header({ activeTab, setActiveTab, onDailyTabClick, favorites = [], newFavsCount = 0, markFavsSeen, t }) {
   const { user, isAuthenticated, logout } = useAuth()
   const { lang, setLang } = useLang()
   const [showFavorites, setShowFavorites] = useState(false)
-  const [avatarUrl, setAvatarUrl] = useState(null)
+  const avatarUrl = user?.avatarUrl
   const [menuOpen, setMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const navRef = useRef()
   const userMenuRef = useRef()
-
-  useEffect(() => {
-    if (user?.avatarUrl) setAvatarUrl(user.avatarUrl)
-  }, [user?.avatarUrl])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -242,7 +237,7 @@ export function Header({ theme, toggleTheme, activeTab, setActiveTab, onDailyTab
   )
 }
 
-export function SearchTab({ t }) {
+export function SearchTab() {
   const [query, setQuery] = useState('')
   const inputRef = useRef()
   const navigate = useNavigate()
@@ -273,7 +268,7 @@ export function SearchTab({ t }) {
 
 async function shareVerse(verse) {
   const text = `"${verse.text}"\n— ${verse.reference}${verse.version ? ` (${verse.version})` : ''}\n\nyourmessagetoday.vercel.app`
-  if (navigator.share) { try { await navigator.share({ text }) } catch {} }
+  if (navigator.share) { try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ } }
   else { await navigator.clipboard.writeText(text) }
 }
 

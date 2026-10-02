@@ -97,7 +97,7 @@ function MoodCategories({ lang, searchResult, loadingMood, selectMoodCategory })
 async function shareVerse(verse) {
   const text = `"${verse.text}"\n— ${verse.reference}${verse.version ? ` (${verse.version})` : ''}\n\nyourmessagetoday.vercel.app`
   if (navigator.share) {
-    try { await navigator.share({ text }) } catch {}
+    try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ }
   } else {
     await navigator.clipboard.writeText(text)
   }

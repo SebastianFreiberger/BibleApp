@@ -1,5 +1,5 @@
 import { NavBar } from './NavBar'
-import { useLang } from '../context/LangContext'
+import { useLang } from '../context/hooks'
 
 export function Layout({ children }) {
   const { lang } = useLang()

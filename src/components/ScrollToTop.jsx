@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Crown, ArrowUp } from 'lucide-react'
-import { useLang } from '../context/LangContext'
+import { useLang } from '../context/hooks'
 
 export function ScrollToTop() {
   const { lang } = useLang()

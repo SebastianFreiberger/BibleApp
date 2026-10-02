@@ -23,6 +23,8 @@ export function useDailyVerse(lang, bibleVersion) {
 
   useEffect(() => {
     async function loadDailyVerse() {
+      setRandomVerse(null)
+      setShowRandom(false)
       setLoading(true)
       const seed = getDailySeed()
       const index = seed % ALL_REFERENCES.length
@@ -32,8 +34,6 @@ export function useDailyVerse(lang, bibleVersion) {
       setLoading(false)
     }
     loadDailyVerse()
-    setRandomVerse(null)
-    setShowRandom(false)
   }, [lang, bibleVersion])
 
   const generateRandomVerse = async () => {

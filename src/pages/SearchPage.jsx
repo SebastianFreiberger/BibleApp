@@ -41,8 +41,11 @@ export function SearchPage() {
 
   useEffect(() => {
     if (query.trim().length < 2) {
-      setResults([])
-      setSearched(false)
+      function reset() {
+        setResults([])
+        setSearched(false)
+      }
+      reset()
       return
     }
     const timer = setTimeout(async () => {

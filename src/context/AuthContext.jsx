@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../services/supabase'
-
-const AuthContext = createContext(null)
+import { AuthContext } from './contexts'
 
 // Mezcla el usuario de Supabase con los datos del perfil en un objeto uniforme
 function buildUser(supabaseUser, profile) {
@@ -150,10 +149,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth debe usarse dentro de AuthProvider')
-  return context
 }

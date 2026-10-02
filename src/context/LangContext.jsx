@@ -1,8 +1,7 @@
-import { createContext, useContext, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from '../services/supabase'
 import { DEFAULT_VERSION } from '../data/bibleData'
-
-const LangContext = createContext(null)
+import { LangContext } from './contexts'
 
 export function LangProvider({ children }) {
   const [lang, setLangState] = useState(() => localStorage.getItem('lang') || 'es')
@@ -52,10 +51,4 @@ export function LangProvider({ children }) {
       {children}
     </LangContext.Provider>
   )
-}
-
-export function useLang() {
-  const ctx = useContext(LangContext)
-  if (!ctx) throw new Error('useLang debe usarse dentro de LangProvider')
-  return ctx
 }

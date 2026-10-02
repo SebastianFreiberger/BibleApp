@@ -1,5 +1,5 @@
 import { Crown, Heart } from 'lucide-react'
-import { useLang } from '../context/LangContext'
+import { useLang } from '../context/hooks'
 
 export function Footer() {
   const { lang } = useLang()
