@@ -20,7 +20,7 @@ function ForgotPassword({ t, sendPasswordReset, onBack }) {
     setLoading(true)
     const result = await sendPasswordReset(email)
     setLoading(false)
-    if (!result.success) { setError(t.forgotEmailNotFound); return }
+    if (!result.success) { console.error('sendPasswordReset:', result.error); setError(t.forgotGenericError); return }
     setSent(true)
   }
 
