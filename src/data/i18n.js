@@ -82,7 +82,7 @@ export const UI_TEXT = {
     hasAccount: '¿Ya tienes cuenta?',
     loginLink: 'Inicia sesión aquí',
     passwordMismatch: 'Las contraseñas no coinciden',
-    passwordTooShort: 'La contraseña debe tener al menos 6 caracteres',
+    passwordTooShort: 'La contraseña debe tener al menos 8 caracteres',
     registerGenericError: 'No pudimos crear la cuenta. Si ya tenés una cuenta con este email, iniciá sesión; si no, intentá de nuevo en unos minutos.',
     consentRequired: 'Para crear tu cuenta necesitamos que aceptes la Política de Privacidad.',
     // ProfilePage
@@ -219,7 +219,7 @@ export const UI_TEXT = {
     hasAccount: 'Already have an account?',
     loginLink: 'Sign in here',
     passwordMismatch: 'Passwords do not match',
-    passwordTooShort: 'Password must be at least 6 characters',
+    passwordTooShort: 'Password must be at least 8 characters',
     registerGenericError: "We couldn't create your account. If you already have one with this email, sign in instead; otherwise, try again in a few minutes.",
     consentRequired: 'To create your account you need to accept the Privacy Policy.',
     // ProfilePage

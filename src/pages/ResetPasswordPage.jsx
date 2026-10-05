@@ -37,7 +37,7 @@ export function ResetPasswordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (password.length < 6) { setError(t.passwordTooShort); return }
+    if (password.length < 8) { setError(t.passwordTooShort); return }
     if (password !== confirm) { setError(t.passwordMismatch); return }
     setLoading(true)
     const { error: err } = await supabase.auth.updateUser({ password })

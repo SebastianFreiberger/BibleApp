@@ -31,7 +31,7 @@ async function fillAndSubmit(user, { password = 'password123', confirm = 'passwo
 }
 
 describe('RegisterPage', () => {
-  it('rejects a password shorter than 6 characters without calling the API', async () => {
+  it('rejects a password shorter than 8 characters without calling the API', async () => {
     const user = userEvent.setup()
     renderPage()
     await fillAndSubmit(user, { password: '123', confirm: '123' })

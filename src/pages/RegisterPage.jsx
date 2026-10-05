@@ -23,7 +23,7 @@ export function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    if (password.length < 6) { setError(t.passwordTooShort); return }
+    if (password.length < 8) { setError(t.passwordTooShort); return }
     if (password !== confirmPassword) { setError(t.passwordMismatch); return }
     if (!consent) { setError(t.consentRequired); return }
     setLoading(true)

@@ -385,6 +385,7 @@ export function ProfileInfoSection({ user, onSave, lang }) {
 
   const handleSave = async () => {
     if (!name.trim()) { setError(es ? 'El nombre no puede estar vacío' : 'Name cannot be empty'); return }
+    if (password && password.length < 8) { setError(es ? 'La contraseña debe tener al menos 8 caracteres' : 'Password must be at least 8 characters'); return }
     if (password && password !== confirm) { setError(es ? 'Las contraseñas no coinciden' : 'Passwords do not match'); return }
 
     setSaving(true)

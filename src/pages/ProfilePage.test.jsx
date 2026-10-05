@@ -95,4 +95,18 @@ describe('ProfileInfoSection', () => {
     expect(screen.getByText(/las contraseñas no coinciden/i)).toBeInTheDocument()
     expect(onSave).not.toHaveBeenCalled()
   })
+
+  it('rejects a new password shorter than 8 characters client-side', async () => {
+    const user = userEvent.setup()
+    const onSave = vi.fn()
+
+    render(<ProfileInfoSection user={user_} onSave={onSave} lang="es" />)
+    await user.click(screen.getByRole('button', { name: 'Editar perfil' }))
+    await user.type(screen.getByPlaceholderText('Dejar vacío para no cambiar'), 'short1')
+    await user.type(screen.getByLabelText('Confirmar contraseña'), 'short1')
+    await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+
+    expect(screen.getByText(/al menos 8 caracteres/i)).toBeInTheDocument()
+    expect(onSave).not.toHaveBeenCalled()
+  })
 })
