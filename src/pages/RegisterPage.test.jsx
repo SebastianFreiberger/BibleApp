@@ -21,9 +21,10 @@ function renderPage() {
   )
 }
 
-async function fillAndSubmit(user, { password = 'password123', confirm = 'password123', consent = true } = {}) {
+async function fillAndSubmit(user, { password = 'password123', confirm = 'password123', consent = true, phone = '' } = {}) {
   await user.type(screen.getByLabelText(t.nameLabel), 'Juan Pérez')
   await user.type(screen.getByLabelText(t.emailLabel), 'juan@example.com')
+  if (phone) await user.type(screen.getByLabelText(t.phoneLabel), phone)
   await user.type(screen.getByLabelText(t.passwordLabel), password)
   await user.type(screen.getByLabelText(t.confirmPasswordLabel), confirm)
   if (consent) await user.click(screen.getByRole('checkbox'))
@@ -37,6 +38,15 @@ describe('RegisterPage', () => {
     await fillAndSubmit(user, { password: '123', confirm: '123' })
 
     expect(screen.getByText(t.passwordTooShort)).toBeInTheDocument()
+    expect(registerMock).not.toHaveBeenCalled()
+  })
+
+  it('rejects a phone number with an invalid format without calling the API', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await fillAndSubmit(user, { phone: '12abc' })
+
+    expect(screen.getByText(t.phoneInvalid)).toBeInTheDocument()
     expect(registerMock).not.toHaveBeenCalled()
   })
 

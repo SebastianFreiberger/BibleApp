@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { ProfileInfoSection, AvatarUpload } from './ProfilePage'
 import { UI_TEXT } from '../data'
 
-const user_ = { name: 'Juan Pérez', email: 'juan@example.com', phone: '123456', createdAt: '2026-01-01' }
+const user_ = { name: 'Juan Pérez', email: 'juan@example.com', phone: '1123456789', createdAt: '2026-01-01' }
 
 function makeFile({ type = 'image/png', sizeBytes = 1024 } = {}) {
   const file = new File(['x'], 'photo.png', { type })
@@ -93,6 +93,21 @@ describe('ProfileInfoSection', () => {
     await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
 
     expect(screen.getByText(/las contraseñas no coinciden/i)).toBeInTheDocument()
+    expect(onSave).not.toHaveBeenCalled()
+  })
+
+  it('rejects a phone number with an invalid format client-side', async () => {
+    const user = userEvent.setup()
+    const onSave = vi.fn()
+
+    render(<ProfileInfoSection user={user_} onSave={onSave} lang="es" />)
+    await user.click(screen.getByRole('button', { name: 'Editar perfil' }))
+    const phoneInput = screen.getByLabelText('Teléfono')
+    await user.clear(phoneInput)
+    await user.type(phoneInput, '12abc')
+    await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+
+    expect(screen.getByText(/no tiene un formato válido/i)).toBeInTheDocument()
     expect(onSave).not.toHaveBeenCalled()
   })
 

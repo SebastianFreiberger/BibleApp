@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth, useLang } from '../context'
 import { UI_TEXT } from '../data'
+import { isValidPhone } from '../services/validation'
 import { BookHeart, Mail, Lock, User, UserPlus, AlertCircle, Phone, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 
 export function RegisterPage() {
@@ -23,6 +24,7 @@ export function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    if (!isValidPhone(phone)) { setError(t.phoneInvalid); return }
     if (password.length < 8) { setError(t.passwordTooShort); return }
     if (password !== confirmPassword) { setError(t.passwordMismatch); return }
     if (!consent) { setError(t.consentRequired); return }

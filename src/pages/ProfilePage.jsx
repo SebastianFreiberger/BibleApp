@@ -11,6 +11,7 @@ import { useLang } from '../context'
 import { useTheme, useFavorites, useStreak, useNewFavsCount } from '../hooks'
 import { UI_TEXT, BIBLE_VERSIONS } from '../data'
 import { Footer, ScrollToTop, AvatarCropModal } from '../components'
+import { isValidPhone } from '../services/validation'
 
 const MAX_AVATAR_BYTES = 3 * 1024 * 1024
 
@@ -385,6 +386,7 @@ export function ProfileInfoSection({ user, onSave, lang }) {
 
   const handleSave = async () => {
     if (!name.trim()) { setError(es ? 'El nombre no puede estar vacío' : 'Name cannot be empty'); return }
+    if (!isValidPhone(phone)) { setError(es ? 'El teléfono no tiene un formato válido' : 'Phone number format is not valid'); return }
     if (password && password.length < 8) { setError(es ? 'La contraseña debe tener al menos 8 caracteres' : 'Password must be at least 8 characters'); return }
     if (password && password !== confirm) { setError(es ? 'Las contraseñas no coinciden' : 'Passwords do not match'); return }
 
