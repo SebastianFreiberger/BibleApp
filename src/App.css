@@ -4394,6 +4394,7 @@
 .icon-ver     { color: #667eea; }
 .icon-cal     { color: #10b981; }
 .icon-plans   { color: #f59e0b; }
+.icon-danger  { color: #ef4444; }
 
 .ps-badge {
   background: rgba(102,126,234,0.1);
@@ -4962,6 +4963,42 @@
   cursor: pointer; transition: opacity 0.15s;
 }
 .pi-btn-save:hover { opacity: 0.9; }
+
+.ps-danger-zone {
+  margin-top: 1.25rem;
+  border-color: rgba(239,68,68,0.25) !important;
+}
+.ps-danger-hint {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+.ps-danger-confirm {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.ps-danger-confirm span { font-size: 0.88rem; font-weight: 600; color: #333; }
+.ps-btn-danger-outline {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: none; border: 1.5px solid #ef4444;
+  border-radius: 10px; padding: 0.6rem 1.1rem;
+  font-size: 0.88rem; color: #ef4444; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.ps-btn-danger-outline:hover { background: rgba(239,68,68,0.08); }
+.ps-btn-danger {
+  background: #ef4444; border: none; border-radius: 10px;
+  padding: 0.6rem 1.1rem; font-size: 0.88rem; color: white; font-weight: 600;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.ps-btn-danger:hover { opacity: 0.9; }
+.ps-btn-danger:disabled, .pi-btn-cancel:disabled { opacity: 0.6; cursor: not-allowed; }
+
+[data-theme="dark"] .ps-danger-hint { color: #8b8696; }
+[data-theme="dark"] .ps-danger-confirm span { color: #e2e8f0; }
 
 [data-theme="dark"] .pi-field        { border-color: rgba(255,255,255,0.07); }
 [data-theme="dark"] .pi-field-value  { color: #e2e8f0; }

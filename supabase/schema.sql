@@ -17,6 +17,11 @@ alter table public.profiles
   add column if not exists bible_version text default 'RV1960',
   add column if not exists theme text default 'dark';
 
+-- Baja "soft": marca la fecha de baja en vez de borrar la fila. Si el usuario
+-- vuelve a iniciar sesión, AuthContext la reactiva (pone deleted_at en null).
+alter table public.profiles
+  add column if not exists deleted_at timestamptz;
+
 -- Trigger: crea el perfil automáticamente al registrarse
 create or replace function public.handle_new_user()
 returns trigger as $$
@@ -59,3 +64,14 @@ create policy "Racha propia" on public.streak_days for all using (auth.uid() = u
 
 -- STORAGE: crear manualmente desde el dashboard (Storage → New bucket)
 -- Bucket: "avatars" (público), usado para las fotos de perfil.
+-- Políticas (Storage → Policies). Sin esto, nadie puede leer ni escribir nada:
+create policy "Avatar public read" on storage.objects
+  for select to public using (bucket_id = 'avatars');
+
+create policy "Avatar upload own folder" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Avatar update own folder" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);

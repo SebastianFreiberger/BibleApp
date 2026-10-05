@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
   User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Pencil, Sliders, Share2, Eye, EyeOff
+  Pencil, Sliders, Share2, Eye, EyeOff, AlertTriangle
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
@@ -499,6 +499,61 @@ export function ProfileInfoSection({ user, onSave, lang }) {
   )
 }
 
+// ── Eliminar cuenta (baja soft) ─────────────────────────
+export function DeleteAccountSection({ lang, deleteAccount }) {
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+  const es = lang === 'es'
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    const result = await deleteAccount()
+    setDeleting(false)
+    if (!result?.success) {
+      console.error('deleteAccount:', result?.error)
+      setError(es ? 'No pudimos eliminar la cuenta. Intentá de nuevo.' : "We couldn't delete your account. Please try again.")
+      return
+    }
+    navigate('/')
+  }
+
+  return (
+    <div className="ps-profile-card ps-danger-zone">
+      <div className="ps-section-header">
+        <AlertTriangle size={20} className="ps-section-icon icon-danger" />
+        <h2>{es ? 'Eliminar cuenta' : 'Delete account'}</h2>
+      </div>
+
+      <p className="ps-danger-hint">
+        {es
+          ? 'Tu cuenta se desactiva y cerrás sesión. Podés recuperarla en cualquier momento volviendo a iniciar sesión con tu email y contraseña — tus favoritos y tu racha no se pierden.'
+          : "Your account is deactivated and you're signed out. You can recover it anytime by logging back in with your email and password — your favorites and streak are not lost."}
+      </p>
+
+      {error && <p className="pi-msg pi-error">{error}</p>}
+
+      {confirming ? (
+        <div className="ps-danger-confirm">
+          <span>{es ? '¿Estás seguro?' : 'Are you sure?'}</span>
+          <div className="pi-actions">
+            <button className="pi-btn-cancel" onClick={() => setConfirming(false)} disabled={deleting}>
+              {es ? 'Cancelar' : 'Cancel'}
+            </button>
+            <button className="ps-btn-danger" onClick={handleDelete} disabled={deleting}>
+              {deleting ? (es ? 'Eliminando...' : 'Deleting...') : (es ? 'Sí, eliminar mi cuenta' : 'Yes, delete my account')}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button className="ps-btn-danger-outline" onClick={() => setConfirming(true)}>
+          <Trash2 size={15} /> {es ? 'Eliminar mi cuenta' : 'Delete my account'}
+        </button>
+      )}
+    </div>
+  )
+}
 
 // ── Sidebar nav items ──────────────────────────────────
 function SidebarItem({ id, icon, label, active, badge, onClick }) {
@@ -517,7 +572,7 @@ function SidebarItem({ id, icon, label, active, badge, onClick }) {
 
 // ── Main component ─────────────────────────────────────
 export function ProfilePage() {
-  const { user, isAuthenticated, loading, logout, updateProfile } = useAuth()
+  const { user, isAuthenticated, loading, logout, updateProfile, deleteAccount } = useAuth()
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
@@ -615,11 +670,14 @@ export function ProfilePage() {
         <main className="profile-content">
           <div key={activeSection} className="ps-section-enter">
           {activeSection === 'profile' && (
-            <ProfileInfoSection
-              user={user}
-              onSave={handleSaveProfile}
-              lang={lang}
-            />
+            <>
+              <ProfileInfoSection
+                user={user}
+                onSave={handleSaveProfile}
+                lang={lang}
+              />
+              <DeleteAccountSection lang={lang} deleteAccount={deleteAccount} />
+            </>
           )}
           {activeSection === 'favorites' && (
             <FavoritesSection favorites={favorites} removeFavorite={removeFavorite} lang={lang} t={t} />

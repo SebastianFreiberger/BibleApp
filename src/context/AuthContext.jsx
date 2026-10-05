@@ -29,6 +29,14 @@ export function AuthProvider({ children }) {
       .select('*')
       .eq('id', supabaseUser.id)
       .single()
+
+    // Reactivación: si la cuenta estaba dada de baja (soft delete) y el
+    // usuario vuelve a iniciar sesión, se reactiva automáticamente.
+    if (profile?.deleted_at) {
+      await supabase.from('profiles').update({ deleted_at: null }).eq('id', supabaseUser.id)
+      profile.deleted_at = null
+    }
+
     setUser(buildUser(supabaseUser, profile))
   }
 
@@ -115,6 +123,20 @@ export function AuthProvider({ children }) {
     return { success: true }
   }
 
+  // Baja "soft": marca la cuenta como eliminada y cierra la sesión. Si el
+  // usuario vuelve a iniciar sesión más adelante, se reactiva sola (ver
+  // fetchProfile) — los datos (favoritos, racha) nunca se borran.
+  const deleteAccount = async () => {
+    if (!user) return { success: false }
+    const { error } = await supabase
+      .from('profiles')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', user.id)
+    if (error) return { success: false, error: error.message }
+    await supabase.auth.signOut()
+    return { success: true }
+  }
+
   // Envía email de recuperación con link (plan gratuito Supabase)
   const sendPasswordReset = async (email) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -139,6 +161,7 @@ export function AuthProvider({ children }) {
     logout,
     updateProfile,
     updateAvatar,
+    deleteAccount,
     sendPasswordReset,
     resetPassword,
     isAuthenticated: !!user
