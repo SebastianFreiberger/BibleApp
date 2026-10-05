@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X, Check, ZoomIn, Loader } from 'lucide-react'
 import { getCoverScale, getMaxPan, clamp, getSourceRect } from './avatarCropMath'
 
-const FRAME = 260
-const OUTPUT = 480
+const FRAME = 300
+const OUTPUT = 600
 const MAX_USER_SCALE = 3
 
 export function AvatarCropModal({ file, onCancel, onSave, saving, t }) {
@@ -62,7 +63,7 @@ export function AvatarCropModal({ file, onCancel, onSave, saving, t }) {
     canvas.toBlob(blob => { if (blob) onSave(blob) }, 'image/jpeg', 0.92)
   }
 
-  return (
+  return createPortal(
     <div className="crop-overlay" onClick={onCancel}>
       <div className="crop-modal" onClick={e => e.stopPropagation()}>
         <div className="crop-modal-header">
@@ -86,17 +87,20 @@ export function AvatarCropModal({ file, onCancel, onSave, saving, t }) {
           onTouchEnd={endDrag}
         >
           {imgEl ? (
-            <img
-              src={imgEl.src}
-              alt=""
-              draggable={false}
-              className="crop-frame-img"
-              style={{
-                width: dispW,
-                height: dispH,
-                transform: `translate(${(FRAME - dispW) / 2 + pan.x}px, ${(FRAME - dispH) / 2 + pan.y}px)`,
-              }}
-            />
+            <>
+              <img
+                src={imgEl.src}
+                alt=""
+                draggable={false}
+                className="crop-frame-img"
+                style={{
+                  width: dispW,
+                  height: dispH,
+                  transform: `translate(${(FRAME - dispW) / 2 + pan.x}px, ${(FRAME - dispH) / 2 + pan.y}px)`,
+                }}
+              />
+              <div className="crop-frame-grid" />
+            </>
           ) : (
             <div className="crop-frame-loading"><Loader size={22} className="spin" /></div>
           )}
@@ -119,6 +123,7 @@ export function AvatarCropModal({ file, onCancel, onSave, saving, t }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
