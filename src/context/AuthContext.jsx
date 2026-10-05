@@ -88,11 +88,11 @@ export function AuthProvider({ children }) {
 
   const updateAvatar = async (file) => {
     if (!user) return { success: false }
-    const ext = file.name.split('.').pop()
+    const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
     const path = `${user.id}/avatar.${ext}`
     const { error: upErr } = await supabase.storage
       .from('avatars')
-      .upload(path, file, { upsert: true, contentType: file.type })
+      .upload(path, file, { upsert: true, contentType: file.type || 'image/jpeg' })
     if (upErr) return { success: false, error: upErr.message }
     const { data } = supabase.storage.from('avatars').getPublicUrl(path)
     const avatarUrl = `${data.publicUrl}?t=${Date.now()}`

@@ -4,13 +4,15 @@ import {
   ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
   CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
   User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Pencil, Sliders, Share2, Eye, EyeOff, AlertTriangle
+  Pencil, Sliders, Share2, Eye, EyeOff, AlertTriangle, Camera
 } from 'lucide-react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
 import { useTheme, useFavorites, useStreak, useNewFavsCount } from '../hooks'
 import { UI_TEXT, BIBLE_VERSIONS } from '../data'
-import { Footer, ScrollToTop } from '../components'
+import { Footer, ScrollToTop, AvatarCropModal } from '../components'
+
+const MAX_AVATAR_BYTES = 3 * 1024 * 1024
 
 // ── Helpers ────────────────────────────────────────────
 function getInitials(name = '') {
@@ -555,6 +557,72 @@ export function DeleteAccountSection({ lang, deleteAccount }) {
   )
 }
 
+// ── Avatar upload ──────────────────────────────────────
+export function AvatarUpload({ avatarUrl, initials, updateAvatar, t, onAvatarClick }) {
+  const [pendingFile, setPendingFile] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setError('')
+    if (!file.type.startsWith('image/')) {
+      setError(t.avatarInvalidType)
+      return
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setError(t.avatarTooLarge)
+      return
+    }
+    setPendingFile(file)
+  }
+
+  const handleCropSave = async (blob) => {
+    setSaving(true)
+    const result = await updateAvatar(blob)
+    setSaving(false)
+    if (!result?.success) {
+      console.error('updateAvatar:', result?.error)
+      setError(t.avatarUploadError)
+      return
+    }
+    setPendingFile(null)
+  }
+
+  return (
+    <>
+      <div className="ps-hero-avatar-wrap">
+        <div className="ps-hero-avatar" onClick={onAvatarClick}>
+          {avatarUrl
+            ? <img src={avatarUrl} alt="avatar" />
+            : initials
+              ? initials
+              : <User size={24} strokeWidth={1.5} />
+          }
+        </div>
+        <label className="ps-avatar-upload-btn" title={t.changePhoto}>
+          <Camera size={13} />
+          <input type="file" accept="image/*" aria-label={t.changePhoto} onChange={handleFileChange} hidden />
+        </label>
+      </div>
+
+      {error && <p className="ps-avatar-error">{error}</p>}
+
+      {pendingFile && (
+        <AvatarCropModal
+          file={pendingFile}
+          saving={saving}
+          onCancel={() => setPendingFile(null)}
+          onSave={handleCropSave}
+          t={t}
+        />
+      )}
+    </>
+  )
+}
+
 // ── Sidebar nav items ──────────────────────────────────
 function SidebarItem({ id, icon, label, active, badge, onClick }) {
   const Icon = icon
@@ -572,7 +640,7 @@ function SidebarItem({ id, icon, label, active, badge, onClick }) {
 
 // ── Main component ─────────────────────────────────────
 export function ProfilePage() {
-  const { user, isAuthenticated, loading, logout, updateProfile, deleteAccount } = useAuth()
+  const { user, isAuthenticated, loading, logout, updateProfile, deleteAccount, updateAvatar } = useAuth()
   const { lang, bibleVersion, setBibleVersion } = useLang()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
@@ -639,14 +707,13 @@ export function ProfilePage() {
         <aside className="profile-sidebar">
           {/* Hero */}
           <div className="ps-hero">
-            <div className="ps-hero-avatar" onClick={() => setActiveSection('profile')}>
-              {avatarUrl
-                ? <img src={avatarUrl} alt="avatar" />
-                : initials
-                  ? initials
-                  : <User size={24} strokeWidth={1.5} />
-              }
-            </div>
+            <AvatarUpload
+              avatarUrl={avatarUrl}
+              initials={initials}
+              updateAvatar={updateAvatar}
+              t={t}
+              onAvatarClick={() => setActiveSection('profile')}
+            />
             <button className="ps-hero-name" onClick={() => setActiveSection('profile')}>
               {user?.name?.split(' ')[0]} <Pencil size={11} />
             </button>
