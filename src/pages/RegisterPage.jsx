@@ -26,8 +26,12 @@ export function RegisterPage() {
     if (password !== confirmPassword) { setError(t.passwordMismatch); return }
     setLoading(true)
     const result = await register(name, email, phone, password)
-    if (result.success) navigate('/')
-    else setError(t.emailExists)
+    if (result.success) {
+      navigate('/')
+    } else {
+      console.error('register:', result.error)
+      setError(t.registerGenericError)
+    }
     setLoading(false)
   }
 

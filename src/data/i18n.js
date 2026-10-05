@@ -82,7 +82,7 @@ export const UI_TEXT = {
     loginLink: 'Inicia sesión aquí',
     passwordMismatch: 'Las contraseñas no coinciden',
     passwordTooShort: 'La contraseña debe tener al menos 6 caracteres',
-    emailExists: 'Este email ya está registrado',
+    registerGenericError: 'No pudimos crear la cuenta. Si ya tenés una cuenta con este email, iniciá sesión; si no, intentá de nuevo en unos minutos.',
     // ProfilePage
     profileTitle: 'Mi Perfil',
     profileSubtitle: 'Tu espacio personal',
@@ -207,7 +207,7 @@ export const UI_TEXT = {
     loginLink: 'Sign in here',
     passwordMismatch: 'Passwords do not match',
     passwordTooShort: 'Password must be at least 6 characters',
-    emailExists: 'This email is already registered',
+    registerGenericError: "We couldn't create your account. If you already have one with this email, sign in instead; otherwise, try again in a few minutes.",
     // ProfilePage
     profileTitle: 'My Profile',
     profileSubtitle: 'Your personal space',

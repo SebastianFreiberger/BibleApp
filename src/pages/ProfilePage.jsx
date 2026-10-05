@@ -362,7 +362,7 @@ function PlansSection({ lang }) {
 }
 
 // ── Profile Info Section ───────────────────────────────
-function ProfileInfoSection({ user, onSave, lang }) {
+export function ProfileInfoSection({ user, onSave, lang }) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(user?.name || '')
   const [phone, setPhone] = useState(user?.phone || '')
@@ -372,6 +372,7 @@ function ProfileInfoSection({ user, onSave, lang }) {
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [saving, setSaving] = useState(false)
   const es = lang === 'es'
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString(
@@ -380,10 +381,20 @@ function ProfileInfoSection({ user, onSave, lang }) {
       )
     : null
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) { setError(es ? 'El nombre no puede estar vacío' : 'Name cannot be empty'); return }
     if (password && password !== confirm) { setError(es ? 'Las contraseñas no coinciden' : 'Passwords do not match'); return }
-    onSave({ name: name.trim(), phone, password: password || null })
+
+    setSaving(true)
+    const result = await onSave({ name: name.trim(), phone, password: password || null })
+    setSaving(false)
+
+    if (!result?.success) {
+      console.error('updateProfile:', result?.error)
+      setError(es ? 'No pudimos guardar los cambios. Intentá de nuevo.' : "We couldn't save your changes. Please try again.")
+      return
+    }
+
     setEditing(false); setPassword(''); setConfirm(''); setError('')
     setSuccess(true); setTimeout(() => setSuccess(false), 2500)
   }
@@ -405,9 +416,9 @@ function ProfileInfoSection({ user, onSave, lang }) {
       {/* Fields */}
       <div className="pi-fields">
         <div className="pi-field">
-          <span className="pi-field-label">{es ? 'Nombre' : 'Name'}</span>
+          <label className="pi-field-label" htmlFor="pi-name">{es ? 'Nombre' : 'Name'}</label>
           {editing
-            ? <input className="pi-input" value={name} onChange={e => { setName(e.target.value); setError('') }} />
+            ? <input id="pi-name" className="pi-input" value={name} onChange={e => { setName(e.target.value); setError('') }} />
             : <span className="pi-field-value">{user?.name}</span>
           }
         </div>
@@ -418,9 +429,9 @@ function ProfileInfoSection({ user, onSave, lang }) {
         </div>
 
         <div className="pi-field">
-          <span className="pi-field-label">{es ? 'Teléfono' : 'Phone'}</span>
+          <label className="pi-field-label" htmlFor="pi-phone">{es ? 'Teléfono' : 'Phone'}</label>
           {editing
-            ? <input className="pi-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder={es ? 'Sin teléfono' : 'No phone'} />
+            ? <input id="pi-phone" className="pi-input" value={phone} onChange={e => setPhone(e.target.value)} placeholder={es ? 'Sin teléfono' : 'No phone'} />
             : <span className="pi-field-value pi-field-muted">{user?.phone || '—'}</span>
           }
         </div>
@@ -435,9 +446,10 @@ function ProfileInfoSection({ user, onSave, lang }) {
         {editing && (
           <>
             <div className="pi-field">
-              <span className="pi-field-label">{es ? 'Nueva contraseña' : 'New password'}</span>
+              <label className="pi-field-label" htmlFor="pi-password">{es ? 'Nueva contraseña' : 'New password'}</label>
               <div className="pi-input-wrap">
                 <input
+                  id="pi-password"
                   className="pi-input pi-input-pw"
                   type={showPassword ? 'text' : 'password'}
                   placeholder={es ? 'Dejar vacío para no cambiar' : 'Leave empty to keep current'}
@@ -450,9 +462,10 @@ function ProfileInfoSection({ user, onSave, lang }) {
             </div>
             {password && (
               <div className="pi-field">
-                <span className="pi-field-label">{es ? 'Confirmar contraseña' : 'Confirm password'}</span>
+                <label className="pi-field-label" htmlFor="pi-confirm">{es ? 'Confirmar contraseña' : 'Confirm password'}</label>
                 <div className="pi-input-wrap">
                   <input
+                    id="pi-confirm"
                     className="pi-input pi-input-pw"
                     type={showConfirm ? 'text' : 'password'}
                     value={confirm} onChange={e => { setConfirm(e.target.value); setError('') }}
@@ -473,8 +486,10 @@ function ProfileInfoSection({ user, onSave, lang }) {
       <div className="pi-actions">
         {editing ? (
           <>
-            <button className="pi-btn-cancel" onClick={handleCancel}>{es ? 'Cancelar' : 'Cancel'}</button>
-            <button className="pi-btn-save" onClick={handleSave}>{es ? 'Guardar cambios' : 'Save changes'}</button>
+            <button className="pi-btn-cancel" onClick={handleCancel} disabled={saving}>{es ? 'Cancelar' : 'Cancel'}</button>
+            <button className="pi-btn-save" onClick={handleSave} disabled={saving}>
+              {saving ? (es ? 'Guardando...' : 'Saving...') : (es ? 'Guardar cambios' : 'Save changes')}
+            </button>
           </>
         ) : (
           <button className="pi-btn-edit" onClick={() => setEditing(true)}>{es ? 'Editar perfil' : 'Edit profile'}</button>
@@ -521,7 +536,7 @@ export function ProfilePage() {
   }
 
   const handleSaveProfile = ({ name, phone, password }) => {
-    updateProfile({ name, phone, password })
+    return updateProfile({ name, phone, password })
   }
 
   const memberSince = useMemo(() => getMemberSince(user?.createdAt, lang), [user?.id, lang])
