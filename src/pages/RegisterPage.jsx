@@ -13,6 +13,7 @@ export function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [consent, setConsent] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
@@ -24,6 +25,7 @@ export function RegisterPage() {
     setError('')
     if (password.length < 6) { setError(t.passwordTooShort); return }
     if (password !== confirmPassword) { setError(t.passwordMismatch); return }
+    if (!consent) { setError(t.consentRequired); return }
     setLoading(true)
     const result = await register(name, email, phone, password)
     if (result.success) {
@@ -93,6 +95,22 @@ export function RegisterPage() {
               </button>
             </div>
           </div>
+
+          <label className="consent-group">
+            <input
+              type="checkbox" checked={consent}
+              onChange={e => { setConsent(e.target.checked); setError('') }}
+            />
+            <span>
+              {lang === 'es' ? 'Acepto la ' : 'I agree to the '}
+              <Link to="/privacidad" target="_blank" rel="noopener noreferrer">
+                {lang === 'es' ? 'Política de Privacidad' : 'Privacy Policy'}
+              </Link>
+              {lang === 'es'
+                ? ', incluyendo que el texto de "¿Cómo te sientes?" se procesa con una IA externa.'
+                : ', including that the "How are you feeling?" text is processed by a third-party AI.'}
+            </span>
+          </label>
 
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? <span>{t.creatingAccount}</span> : <><UserPlus size={18} /><span>{t.registerBtn}</span></>}

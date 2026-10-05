@@ -17,6 +17,7 @@ export const UI_TEXT = {
     moodSubtitle: 'Escribe tu estado de ánimo o selecciona una categoría',
     searchPlaceholder: 'Ej: triste, ansioso, agradecido, con miedo...',
     searchBtn: 'Buscar',
+    moodPrivacyNote: 'Este texto se analiza con IA para sugerirte versículos — no se guarda ni se vincula a tu cuenta.',
     searchingVerses: 'Buscando versículos...',
     versesFor: 'Versículos para cuando sientes',
     noResults: 'No encontramos versículos para',
@@ -83,6 +84,7 @@ export const UI_TEXT = {
     passwordMismatch: 'Las contraseñas no coinciden',
     passwordTooShort: 'La contraseña debe tener al menos 6 caracteres',
     registerGenericError: 'No pudimos crear la cuenta. Si ya tenés una cuenta con este email, iniciá sesión; si no, intentá de nuevo en unos minutos.',
+    consentRequired: 'Para crear tu cuenta necesitamos que aceptes la Política de Privacidad.',
     // ProfilePage
     profileTitle: 'Mi Perfil',
     profileSubtitle: 'Tu espacio personal',
@@ -142,6 +144,7 @@ export const UI_TEXT = {
     moodSubtitle: 'Type your mood or select a category',
     searchPlaceholder: 'Ex: sad, anxious, grateful, afraid...',
     searchBtn: 'Search',
+    moodPrivacyNote: "This text is analyzed by AI to suggest verses — it's never saved or linked to your account.",
     searchingVerses: 'Searching verses...',
     versesFor: 'Verses for when you feel',
     noResults: "We couldn't find verses for",
@@ -208,6 +211,7 @@ export const UI_TEXT = {
     passwordMismatch: 'Passwords do not match',
     passwordTooShort: 'Password must be at least 6 characters',
     registerGenericError: "We couldn't create your account. If you already have one with this email, sign in instead; otherwise, try again in a few minutes.",
+    consentRequired: 'To create your account you need to accept the Privacy Policy.',
     // ProfilePage
     profileTitle: 'My Profile',
     profileSubtitle: 'Your personal space',

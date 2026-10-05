@@ -2135,6 +2135,16 @@
   flex-wrap: wrap;
 }
 
+.mood-privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.76rem;
+  color: #9ca3af;
+}
+
 .search-input {
   flex: 1;
   min-width: 250px;
@@ -3249,6 +3259,97 @@
   flex-direction: column;
   gap: 1.25rem;
 }
+
+/* ── Legal pages (privacidad) ──────────────────────────── */
+.legal-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #0d0b1e 0%, #1a1a2e 50%, #24243e 100%);
+}
+
+.legal-container {
+  width: 100%;
+  max-width: 680px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  height: fit-content;
+}
+
+.legal-header { text-align: center; margin-bottom: 1.5rem; }
+.legal-header-icon { stroke: #667eea; margin-bottom: 0.75rem; }
+.legal-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.legal-updated { color: #94a3b8; font-size: 0.82rem; }
+
+.legal-intro {
+  font-size: 0.98rem;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.legal-section { margin-bottom: 1.75rem; }
+.legal-section:last-child { margin-bottom: 0; }
+.legal-section h2 {
+  font-size: 1.05rem;
+  color: #333;
+  margin-bottom: 0.6rem;
+}
+.legal-section p {
+  font-size: 0.92rem;
+  color: #555;
+  line-height: 1.65;
+  margin: 0 0 0.6rem;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+
+[data-theme="light"] .legal-container {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+[data-theme="dark"] .legal-container {
+  background: rgba(30, 27, 75, 0.95);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .legal-header h1 {
+  background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="dark"] .legal-header-icon { stroke: #a78bfa; }
+[data-theme="dark"] .legal-intro {
+  color: #cbd5e1;
+  border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .legal-section h2 { color: #e2e8f0; }
+[data-theme="dark"] .legal-section p { color: #a1a1aa; }
+
+/* ── Consent checkbox (registro) ───────────────────────── */
+.consent-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+}
+.consent-group input { margin-top: 0.2rem; flex-shrink: 0; }
+.consent-group a { color: #667eea; font-weight: 600; }
+[data-theme="dark"] .consent-group { color: #a1a1aa; }
 
 .form-group {
   display: flex;
@@ -5358,6 +5459,12 @@
 .landing-footer-crown { color: #a78bfa; flex-shrink: 0; }
 .landing-footer-made { color: #4b5563; display: flex; align-items: center; gap: 0.3rem; }
 .landing-footer-heart { color: #ec4899; vertical-align: middle; }
+.landing-footer-privacy {
+  color: #6b7280; text-decoration: none;
+  border-left: 1px solid rgba(255,255,255,0.12);
+  padding-left: 0.6rem; transition: color 0.15s;
+}
+.landing-footer-privacy:hover { color: #a78bfa; }
 
 .landing-scroll-top {
   position: fixed;

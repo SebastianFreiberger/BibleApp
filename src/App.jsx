@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { AuthProvider, useAuth, LangProvider, ThemeProvider, useLang, useTheme } from './context'
-import { LandingPage, LoginPage, RegisterPage, HomePage, AttributesPage, BiblePage, ProfilePage, SearchPage, ResetPasswordPage } from './pages'
+import { LandingPage, LoginPage, RegisterPage, HomePage, AttributesPage, BiblePage, ProfilePage, SearchPage, ResetPasswordPage, PrivacyPage } from './pages'
 import './App.css'
 
 function RootRoute() {
@@ -47,6 +47,7 @@ function AppRoutes() {
         <Route path="/perfil" element={<ProfilePage />} />
         <Route path="/attributes" element={<AttributesPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/privacidad" element={<PrivacyPage />} />
       </Routes>
     </>
   )

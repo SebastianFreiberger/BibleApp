@@ -21,11 +21,12 @@ function renderPage() {
   )
 }
 
-async function fillAndSubmit(user, { password = 'password123', confirm = 'password123' } = {}) {
+async function fillAndSubmit(user, { password = 'password123', confirm = 'password123', consent = true } = {}) {
   await user.type(screen.getByLabelText(t.nameLabel), 'Juan Pérez')
   await user.type(screen.getByLabelText(t.emailLabel), 'juan@example.com')
   await user.type(screen.getByLabelText(t.passwordLabel), password)
   await user.type(screen.getByLabelText(t.confirmPasswordLabel), confirm)
+  if (consent) await user.click(screen.getByRole('checkbox'))
   await user.click(screen.getByRole('button', { name: t.registerBtn }))
 }
 
@@ -68,5 +69,21 @@ describe('RegisterPage', () => {
     await fillAndSubmit(user)
 
     expect(registerMock).toHaveBeenCalledWith('Juan Pérez', 'juan@example.com', '', 'password123')
+  })
+
+  // La app ahora exige aceptar la Política de Privacidad antes de crear la cuenta.
+  it('requires accepting the privacy policy before calling the API', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    await fillAndSubmit(user, { consent: false })
+
+    expect(screen.getByText(t.consentRequired)).toBeInTheDocument()
+    expect(registerMock).not.toHaveBeenCalled()
+  })
+
+  it('links the consent checkbox to the privacy policy page', () => {
+    renderPage()
+    const link = screen.getByRole('link', { name: /política de privacidad/i })
+    expect(link).toHaveAttribute('href', '/privacidad')
   })
 })

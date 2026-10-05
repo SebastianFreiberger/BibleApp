@@ -1,4 +1,5 @@
 import { Crown, Heart } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useLang } from '../context/hooks'
 
 export function Footer() {
@@ -15,6 +16,9 @@ export function Footer() {
           <Heart size={12} fill="currentColor" className="landing-footer-heart" />{' '}
           {es ? 'para tu fe' : 'for your faith'}
         </span>
+        <Link to="/privacidad" className="landing-footer-privacy">
+          {es ? 'Privacidad' : 'Privacy'}
+        </Link>
       </div>
     </footer>
   )

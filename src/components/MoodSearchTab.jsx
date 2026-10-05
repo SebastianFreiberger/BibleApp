@@ -1,4 +1,4 @@
-import { Search, Loader, ChevronDown, ChevronRight, Heart, Share2 } from 'lucide-react'
+import { Search, Loader, ChevronDown, ChevronRight, Heart, Share2, ShieldCheck } from 'lucide-react'
 import { MOOD_ICONS, MOOD_REFERENCES } from '../data'
 
 export function MoodSearchTab({
@@ -35,6 +35,10 @@ export function MoodSearchTab({
             {loadingMood ? <Loader size={18} className="spin" /> : <Search size={18} />} {t.searchBtn}
           </button>
         </form>
+
+        <p className="mood-privacy-note">
+          <ShieldCheck size={13} /> {t.moodPrivacyNote}
+        </p>
       </div>
 
       <MoodCategories 
