@@ -38,7 +38,7 @@ function buildTitleFromCategories(categories, lang) {
     .join(' · ')
 }
 
-function createSearchIndex(lang) {
+export function createSearchIndex(lang) {
   const items = []
   for (const [key, mood] of Object.entries(MOOD_REFERENCES)) {
     const keywords = mood.keywords[lang] || mood.keywords.es
@@ -68,7 +68,7 @@ const STOP_WORDS = new Set([
   'am','is','are','was','were','have','has','been','today','when','also'
 ])
 
-function fuseSearch(query, lang, fuseInstance) {
+export function fuseSearch(query, lang, fuseInstance) {
   const normalized = query.toLowerCase().trim()
   if (!normalized) return null
 

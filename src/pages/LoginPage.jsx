@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 // ── Flujo recuperación de contraseña ───────────────────
-function ForgotPassword({ t, sendPasswordReset, onBack }) {
+export function ForgotPassword({ t, sendPasswordReset, onBack }) {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
