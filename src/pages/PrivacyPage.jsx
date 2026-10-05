@@ -34,6 +34,11 @@ export function PrivacyPage() {
             ))}
           </section>
         ))}
+
+        <Link to="/" className="legal-back-bottom">
+          <ArrowLeft size={18} />
+          {es ? 'Volver' : 'Back'}
+        </Link>
       </div>
     </div>
   )
