@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchVerse } from '../services'
 import { ALL_REFERENCES } from '../data'
 
@@ -20,24 +20,32 @@ export function useDailyVerse(lang, bibleVersion) {
   const [loading, setLoading] = useState(true)
   const [loadingRandom, setLoadingRandom] = useState(false)
   const [showRandom, setShowRandom] = useState(false)
+  const [error, setError] = useState(false)
+
+  const loadDailyVerse = useCallback(async () => {
+    setLoading(true)
+    setError(false)
+    const seed = getDailySeed()
+    const index = seed % ALL_REFERENCES.length
+    const reference = ALL_REFERENCES[index]
+    const verse = await fetchVerse(reference, lang, bibleVersion)
+    setDailyVerse(verse)
+    if (!verse) setError(true)
+    setLoading(false)
+  }, [lang, bibleVersion])
 
   useEffect(() => {
-    async function loadDailyVerse() {
+    function run() {
       setRandomVerse(null)
       setShowRandom(false)
-      setLoading(true)
-      const seed = getDailySeed()
-      const index = seed % ALL_REFERENCES.length
-      const reference = ALL_REFERENCES[index]
-      const verse = await fetchVerse(reference, lang, bibleVersion)
-      setDailyVerse(verse)
-      setLoading(false)
+      loadDailyVerse()
     }
-    loadDailyVerse()
-  }, [lang, bibleVersion])
+    run()
+  }, [loadDailyVerse])
 
   const generateRandomVerse = async () => {
     setLoadingRandom(true)
+    setError(false)
     const seed = getDailySeed()
     const dailyIndex = seed % ALL_REFERENCES.length
     let randomIndex
@@ -48,6 +56,7 @@ export function useDailyVerse(lang, bibleVersion) {
 
     const verse = await fetchVerse(reference, lang, bibleVersion)
     setRandomVerse(verse)
+    if (!verse) setError(true)
     setShowRandom(true)
     setLoadingRandom(false)
   }
@@ -55,6 +64,12 @@ export function useDailyVerse(lang, bibleVersion) {
   const backToDaily = () => {
     setShowRandom(false)
     setRandomVerse(null)
+    setError(!dailyVerse)
+  }
+
+  const retry = () => {
+    if (showRandom) generateRandomVerse()
+    else loadDailyVerse()
   }
 
   const currentVerse = showRandom ? randomVerse : dailyVerse
@@ -66,6 +81,8 @@ export function useDailyVerse(lang, bibleVersion) {
     loading,
     loadingRandom,
     showRandom,
+    error,
+    retry,
     generateRandomVerse,
     backToDaily
   }

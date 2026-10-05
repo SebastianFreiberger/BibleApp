@@ -1,107 +1,5 @@
 import { BOOK_DATA } from '../data'
 
-function parseReference(reference) {
-  const parts = reference.split(':')
-  const book = parts[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  const chapter = parseInt(parts[1])
-  const versePart = parts[2]
-
-  let verse, endVerse
-  if (versePart.includes('-')) {
-    const [start, end] = versePart.split('-')
-    verse = parseInt(start)
-    endVerse = parseInt(end)
-  } else {
-    verse = parseInt(versePart)
-    endVerse = verse
-  }
-
-  return { book, chapter, verse, endVerse }
-}
-
-function formatDisplayReference(reference, lang) {
-  const parts = reference.split(':')
-  const bookKey = parts[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-  const bookData = BOOK_DATA[bookKey]
-
-  if (lang === 'en' && bookData) {
-    return bookData.en + ' ' + parts[1] + ':' + parts[2]
-  }
-  return parts[0] + ' ' + parts[1] + ':' + parts[2]
-}
-
-// bolls.life — soporta RV1960, RV1909, NVI, LBLA, DHH, RVR1995, etc.
-async function fetchVerseSpanish(reference, version = 'RV1960') {
-  try {
-    const parsed = parseReference(reference)
-    const bookData = BOOK_DATA[parsed.book]
-
-    if (!bookData) throw new Error('Libro no encontrado: ' + parsed.book)
-
-    const url = `https://bolls.life/get-text/${version}/${bookData.id}/${parsed.chapter}/`
-    const response = await fetch(url)
-    if (!response.ok) throw new Error('Error API: ' + response.status)
-
-    const data = await response.json()
-
-    if (data && Array.isArray(data)) {
-      const versesToGet = []
-      for (let v = parsed.verse; v <= parsed.endVerse; v++) {
-        const found = data.find(item => item.verse === v)
-        if (found) versesToGet.push(found.text.replace(/<[^>]*>/g, ''))
-      }
-      if (versesToGet.length > 0) {
-        return {
-          reference: formatDisplayReference(reference, 'es'),
-          text: versesToGet.join(' ').trim(),
-          version
-        }
-      }
-    }
-
-    throw new Error('No data')
-  } catch (error) {
-    console.error('Error fetching Spanish verse:', error)
-    return {
-      reference: formatDisplayReference(reference, 'es'),
-      text: 'No se pudo cargar el versículo. Verifica tu conexión a internet.',
-      version
-    }
-  }
-}
-
-// bible-api.com — soporta web, kjv, bbe
-async function fetchVerseEnglish(reference, version = 'web') {
-  try {
-    const parsed = parseReference(reference)
-    const bookData = BOOK_DATA[parsed.book]
-
-    if (!bookData) throw new Error('Book not found: ' + parsed.book)
-
-    const verseRange = parsed.verse === parsed.endVerse
-      ? parsed.verse
-      : parsed.verse + '-' + parsed.endVerse
-
-    const url = `https://bible-api.com/${bookData.en.toLowerCase().replace(/ /g, '+')}+${parsed.chapter}:${verseRange}?translation=${version}`
-    const response = await fetch(url)
-    if (!response.ok) throw new Error('Error API')
-
-    const data = await response.json()
-    return {
-      reference: formatDisplayReference(reference, 'en'),
-      text: data.text ? data.text.trim() : 'Verse not available',
-      version
-    }
-  } catch (error) {
-    console.error('Error fetching English verse:', error)
-    return {
-      reference: formatDisplayReference(reference, 'en'),
-      text: 'Could not load verse. Check your internet connection.',
-      version
-    }
-  }
-}
-
 // Obtiene todos los versículos de un capítulo completo
 export async function fetchChapter(bookKey, chapter, lang, version) {
   const bookData = BOOK_DATA[bookKey]
@@ -195,12 +93,22 @@ export async function searchVerses(query, lang, version) {
   }
 }
 
+// Pasa por netlify/functions/bible-verse.js, que cachea el resultado y reintenta
+// ante fallos transitorios de bolls.life / bible-api.com. Devuelve null si no se
+// pudo obtener el versículo — nunca un objeto con texto de error disfrazado de versículo.
 export async function fetchVerse(reference, lang, version) {
-  if (lang === 'es') return fetchVerseSpanish(reference, version)
-  return fetchVerseEnglish(reference, version)
+  try {
+    const params = new URLSearchParams({ reference, lang, version })
+    const res = await fetch(`/api/bible-verse?${params}`)
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.error ? null : data
+  } catch {
+    return null
+  }
 }
 
 export async function fetchMultipleVerses(references, lang, version) {
-  const promises = references.map(ref => fetchVerse(ref, lang, version))
-  return Promise.all(promises)
+  const results = await Promise.all(references.map(ref => fetchVerse(ref, lang, version)))
+  return results.filter(Boolean)
 }

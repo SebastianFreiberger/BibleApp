@@ -4,6 +4,7 @@ import { fetchVerse } from '../services'
 export function useAttributeVerse() {
   const [verseCache, setVerseCache] = useState({})
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
   const loadingRef = useRef(false)
   const cacheRef = useRef({})
 
@@ -25,6 +26,7 @@ export function useAttributeVerse() {
     if (loadingRef.current) return
     loadingRef.current = true
     setLoading(true)
+    setError(false)
 
     try {
       const attrId = attribute.id
@@ -39,6 +41,11 @@ export function useAttributeVerse() {
       const reference = references[refIndex]
       const result = await fetchVerse(reference, lang, bibleVersion)
 
+      if (!result) {
+        setError(true)
+        return
+      }
+
       const newUsed = new Set(current.usedRefIndices)
       if (newUsed.size >= references.length) newUsed.clear()
       newUsed.add(refIndex)
@@ -49,8 +56,9 @@ export function useAttributeVerse() {
         currentIndex: newVerses.length - 1,
         usedRefIndices: newUsed
       })
-    } catch (error) {
-      console.error('Error loading attribute verse:', error)
+    } catch (err) {
+      console.error('Error loading attribute verse:', err)
+      setError(true)
     } finally {
       setLoading(false)
       loadingRef.current = false
@@ -86,5 +94,5 @@ export function useAttributeVerse() {
     }
   }, [verseCache])
 
-  return { loading, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo }
+  return { loading, error, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo }
 }

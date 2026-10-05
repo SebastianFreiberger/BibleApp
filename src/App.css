@@ -880,6 +880,51 @@
   animation: fadeIn 0.8s ease-out;
 }
 
+.verse-error {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.verse-error-icon {
+  color: #94a3b8;
+}
+
+.verse-error p {
+  color: #64748b;
+  font-size: 1rem;
+  max-width: 420px;
+}
+
+.verse-error-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.verse-error-retry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1849,6 +1894,16 @@
   padding: 1rem 0;
 }
 
+.modal-verse-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  padding: 1rem 0;
+}
+
 .spinner-icon {
   animation: spin 1s linear infinite;
 }
@@ -1998,7 +2053,8 @@
   color: #b45309;
 }
 
-[data-theme="light"] .modal-verse-loading {
+[data-theme="light"] .modal-verse-loading,
+[data-theme="light"] .modal-verse-error {
   color: #64748b;
 }
 

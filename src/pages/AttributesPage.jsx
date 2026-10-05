@@ -9,7 +9,7 @@ import {
   HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
   Infinity as InfinityIcon, ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain,
   BookOpen, Gem, Anchor, Star, RefreshCw, Sunrise, Cross, HandHeart,
-  ChevronLeft, ChevronRight, Loader, Share2
+  ChevronLeft, ChevronRight, Loader, Share2, WifiOff
 } from 'lucide-react'
 
 const ICONS = {
@@ -27,7 +27,7 @@ function IconComponent({ iconName, size = 32 }) {
 export function AttributesPage() {
   const { lang, bibleVersion } = useLang()
   const [selectedAttribute, setSelectedAttribute] = useState(null)
-  const { loading, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo } = useAttributeVerse()
+  const { loading, error, loadVerse, goToPrevious, goToNext, getCurrentVerse, getNavInfo } = useAttributeVerse()
   const { addFavorite, removeFavorite, isFavorite } = useFavorites()
 
   const attributes = getAllAttributes(lang)
@@ -208,6 +208,11 @@ export function AttributesPage() {
                   </div>
                 )}
               </>
+            ) : error ? (
+              <div className="modal-verse-error">
+                <WifiOff size={20} />
+                <span>{t.verseError}</span>
+              </div>
             ) : null}
 
             <button

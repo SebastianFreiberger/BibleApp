@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Sparkles, CalendarHeart, Shuffle, ArrowLeft, Loader, Heart, Share2, MessageCircle, Twitter, Facebook, Copy, Check } from 'lucide-react'
+import { Sparkles, CalendarHeart, Shuffle, ArrowLeft, Loader, Heart, Share2, MessageCircle, Twitter, Facebook, Copy, Check, RefreshCw, WifiOff } from 'lucide-react'
 import { GodAttributeCard } from './GodAttributeCard'
 
 export function DailyVerseTab({
@@ -7,6 +7,8 @@ export function DailyVerseTab({
   currentVerse,
   showRandom,
   loadingRandom,
+  error,
+  onRetry,
   generateRandomVerse,
   backToDaily,
   dailyAttribute,
@@ -100,6 +102,18 @@ export function DailyVerseTab({
       <div className="loading">
         <div className="spinner"></div>
         <p>{t.loading}</p>
+      </div>
+    )
+  }
+
+  if (error && !currentVerse) {
+    return (
+      <div className="verse-error">
+        <WifiOff size={32} className="verse-error-icon" />
+        <p>{t.verseError}</p>
+        <button className="verse-error-retry" onClick={onRetry}>
+          <RefreshCw size={14} /> {t.retry}
+        </button>
       </div>
     )
   }

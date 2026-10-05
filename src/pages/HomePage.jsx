@@ -15,6 +15,8 @@ export function HomePage() {
     loading,
     loadingRandom,
     showRandom,
+    error: verseError,
+    retry: retryVerse,
     generateRandomVerse,
     backToDaily
   } = useDailyVerse(lang, bibleVersion)
@@ -67,6 +69,8 @@ export function HomePage() {
             currentVerse={currentVerse}
             showRandom={showRandom}
             loadingRandom={loadingRandom}
+            error={verseError}
+            onRetry={retryVerse}
             generateRandomVerse={generateRandomVerse}
             backToDaily={backToDaily}
             dailyAttribute={dailyAttribute}
