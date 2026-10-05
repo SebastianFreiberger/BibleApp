@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 const { getStoreMock } = vi.hoisted(() => ({ getStoreMock: vi.fn() }))
 vi.mock('@netlify/blobs', () => ({ getStore: getStoreMock }))
 
-const { default: handler } = await import('./bible-verse.js')
+const { default: handler } = await import('../bible-verse.js')
 
 function req(params) {
   return new Request(`http://localhost/api/bible-verse?${new URLSearchParams(params)}`)

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import handler from './classify-mood.js'
+import handler from '../classify-mood.js'
 
 function req(body, { method = 'POST' } = {}) {
   return new Request('http://localhost/api/classify-mood', {
