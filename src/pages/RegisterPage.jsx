@@ -3,7 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth, useLang } from '../context'
 import { UI_TEXT } from '../data'
 import { isValidPhone } from '../services/validation'
+import { Turnstile } from '../components'
 import { BookHeart, Mail, Lock, User, UserPlus, AlertCircle, Phone, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY
 
 export function RegisterPage() {
   const { lang } = useLang()
@@ -15,6 +18,8 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [consent, setConsent] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState(null)
+  const [captchaResetKey, setCaptchaResetKey] = useState(0)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { register } = useAuth()
@@ -28,13 +33,16 @@ export function RegisterPage() {
     if (password.length < 8) { setError(t.passwordTooShort); return }
     if (password !== confirmPassword) { setError(t.passwordMismatch); return }
     if (!consent) { setError(t.consentRequired); return }
+    if (TURNSTILE_SITE_KEY && !captchaToken) { setError(t.captchaRequired); return }
     setLoading(true)
-    const result = await register(name, email, phone, password)
+    const result = await register(name, email, phone, password, captchaToken)
     if (result.success) {
       navigate('/')
     } else {
       console.error('register:', result.error)
       setError(t.registerGenericError)
+      setCaptchaToken(null)
+      setCaptchaResetKey(k => k + 1)
     }
     setLoading(false)
   }
@@ -113,6 +121,15 @@ export function RegisterPage() {
                 : ', including that the "How are you feeling?" text is processed by a third-party AI.'}
             </span>
           </label>
+
+          {TURNSTILE_SITE_KEY && (
+            <Turnstile
+              siteKey={TURNSTILE_SITE_KEY}
+              onVerify={setCaptchaToken}
+              onExpire={() => setCaptchaToken(null)}
+              resetKey={captchaResetKey}
+            />
+          )}
 
           <button type="submit" className="auth-btn" disabled={loading}>
             {loading ? <span>{t.creatingAccount}</span> : <><UserPlus size={18} /><span>{t.registerBtn}</span></>}

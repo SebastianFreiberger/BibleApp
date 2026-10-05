@@ -86,6 +86,7 @@ export const UI_TEXT = {
     passwordTooShort: 'La contraseña debe tener al menos 8 caracteres',
     registerGenericError: 'No pudimos crear la cuenta. Si ya tenés una cuenta con este email, iniciá sesión; si no, intentá de nuevo en unos minutos.',
     consentRequired: 'Para crear tu cuenta necesitamos que aceptes la Política de Privacidad.',
+    captchaRequired: 'Completá la verificación para continuar.',
     // ProfilePage
     profileTitle: 'Mi Perfil',
     profileSubtitle: 'Tu espacio personal',
@@ -224,6 +225,7 @@ export const UI_TEXT = {
     passwordTooShort: 'Password must be at least 8 characters',
     registerGenericError: "We couldn't create your account. If you already have one with this email, sign in instead; otherwise, try again in a few minutes.",
     consentRequired: 'To create your account you need to accept the Privacy Policy.',
+    captchaRequired: 'Please complete the verification to continue.',
     // ProfilePage
     profileTitle: 'My Profile',
     profileSubtitle: 'Your personal space',

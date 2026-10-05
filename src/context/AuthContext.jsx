@@ -58,11 +58,11 @@ export function AuthProvider({ children }) {
     return { success: true }
   }
 
-  const register = async (name, email, phone, password) => {
+  const register = async (name, email, phone, password, captchaToken) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name, phone: phone || null } }
+      options: { data: { name, phone: phone || null }, captchaToken }
     })
     if (error) return { success: false, error: error.message }
 

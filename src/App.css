@@ -3361,6 +3361,8 @@
 [data-theme="dark"] .legal-section h2 { color: #e2e8f0; }
 [data-theme="dark"] .legal-section p { color: #a1a1aa; }
 
+.turnstile-widget { display: flex; justify-content: center; }
+
 /* ── Consent checkbox (registro) ───────────────────────── */
 .consent-group {
   display: flex;

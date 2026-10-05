@@ -78,7 +78,7 @@ describe('RegisterPage', () => {
     renderPage()
     await fillAndSubmit(user)
 
-    expect(registerMock).toHaveBeenCalledWith('Juan Pérez', 'juan@example.com', '', 'password123')
+    expect(registerMock).toHaveBeenCalledWith('Juan Pérez', 'juan@example.com', '', 'password123', null)
   })
 
   // La app ahora exige aceptar la Política de Privacidad antes de crear la cuenta.
