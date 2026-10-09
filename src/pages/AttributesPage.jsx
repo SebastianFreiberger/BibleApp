@@ -122,118 +122,120 @@ export function AttributesPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-glow" style={{ background: selectedAttribute.gradient }}></div>
-            <div
-              className="modal-icon"
-              style={{ background: selectedAttribute.gradient }}
-            >
-              <IconComponent iconName={selectedAttribute.icon} size={48} />
-            </div>
-            <h2>
-              <span className="modal-prefix">{t.godIs}</span>
-              <span className="modal-name" style={{ color: selectedAttribute.color }}>
-                {selectedAttribute.name}
-              </span>
-            </h2>
-            <p className="modal-description">{selectedAttribute.description}</p>
-
-            {loading && !currentVerse ? (
-              <div className="modal-verse-loading">
-                <Loader size={20} className="spinner-icon" />
-                <span>{t.loading}</span>
+            <div className="modal-scroll">
+              <div
+                className="modal-icon"
+                style={{ background: selectedAttribute.gradient }}
+              >
+                <IconComponent iconName={selectedAttribute.icon} size={48} />
               </div>
-            ) : currentVerse ? (
-              <>
-                <div className="modal-verse">
-                  <BookOpen size={18} />
-                  <span>"{currentVerse.text}"</span>
-                </div>
-                <div className="modal-verse-footer">
-                  <p className="modal-reference">— {currentVerse.reference}</p>
-                  <div className="modal-verse-btns">
-                    <button
-                      className={'modal-fav-btn' + (isFavorite(currentVerse.reference, currentVerse.text) ? ' active' : '')}
-                      onClick={() => isFavorite(currentVerse.reference, currentVerse.text)
-                        ? removeFavorite(currentVerse.reference, currentVerse.text)
-                        : addFavorite(currentVerse)
-                      }
-                      title={isFavorite(currentVerse.reference, currentVerse.text)
-                        ? (lang === 'es' ? 'Quitar de favoritos' : 'Remove from favorites')
-                        : (lang === 'es' ? 'Agregar a favoritos' : 'Add to favorites')
-                      }
-                    >
-                      <Heart size={18} fill={isFavorite(currentVerse.reference, currentVerse.text) ? 'currentColor' : 'none'} />
-                    </button>
-                    <button
-                      className="modal-share-btn"
-                      onClick={async () => {
-                        const text = `"${currentVerse.text}"\n— ${currentVerse.reference}\n\nyourmessagetoday.vercel.app`
-                        if (navigator.share) { try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ } }
-                        else { await navigator.clipboard.writeText(text) }
-                      }}
-                      title={lang === 'es' ? 'Compartir' : 'Share'}
-                    >
-                      <Share2 size={18} />
-                    </button>
-                  </div>
-                </div>
+              <h2>
+                <span className="modal-prefix">{t.godIs}</span>
+                <span className="modal-name" style={{ color: selectedAttribute.color }}>
+                  {selectedAttribute.name}
+                </span>
+              </h2>
+              <p className="modal-description">{selectedAttribute.description}</p>
 
-                {navInfo.total > 1 && (
-                  <div className="verse-nav">
-                    <button
-                      className="verse-nav-btn"
-                      onClick={handlePrevious}
-                      disabled={!navInfo.hasPrevious}
-                      aria-label="Previous verse"
-                    >
-                      <ChevronLeft size={18} />
-                    </button>
-                    <span className="verse-nav-count">
-                      {navInfo.current} {t.verseCount} {navInfo.total}
-                    </span>
-                    <button
-                      className="verse-nav-btn"
-                      onClick={handleNext}
-                      disabled={!navInfo.hasNext}
-                      aria-label="Next verse"
-                    >
-                      <ChevronRight size={18} />
-                    </button>
+              {loading && !currentVerse ? (
+                <div className="modal-verse-loading">
+                  <Loader size={20} className="spinner-icon" />
+                  <span>{t.loading}</span>
+                </div>
+              ) : currentVerse ? (
+                <>
+                  <div className="modal-verse">
+                    <BookOpen size={18} />
+                    <span>"{currentVerse.text}"</span>
                   </div>
+                  <div className="modal-verse-footer">
+                    <p className="modal-reference">— {currentVerse.reference}</p>
+                    <div className="modal-verse-btns">
+                      <button
+                        className={'modal-fav-btn' + (isFavorite(currentVerse.reference, currentVerse.text) ? ' active' : '')}
+                        onClick={() => isFavorite(currentVerse.reference, currentVerse.text)
+                          ? removeFavorite(currentVerse.reference, currentVerse.text)
+                          : addFavorite(currentVerse)
+                        }
+                        title={isFavorite(currentVerse.reference, currentVerse.text)
+                          ? (lang === 'es' ? 'Quitar de favoritos' : 'Remove from favorites')
+                          : (lang === 'es' ? 'Agregar a favoritos' : 'Add to favorites')
+                        }
+                      >
+                        <Heart size={18} fill={isFavorite(currentVerse.reference, currentVerse.text) ? 'currentColor' : 'none'} />
+                      </button>
+                      <button
+                        className="modal-share-btn"
+                        onClick={async () => {
+                          const text = `"${currentVerse.text}"\n— ${currentVerse.reference}\n\nyourmessagetoday.vercel.app`
+                          if (navigator.share) { try { await navigator.share({ text }) } catch { /* usuario canceló el share nativo */ } }
+                          else { await navigator.clipboard.writeText(text) }
+                        }}
+                        title={lang === 'es' ? 'Compartir' : 'Share'}
+                      >
+                        <Share2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {navInfo.total > 1 && (
+                    <div className="verse-nav">
+                      <button
+                        className="verse-nav-btn"
+                        onClick={handlePrevious}
+                        disabled={!navInfo.hasPrevious}
+                        aria-label="Previous verse"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+                      <span className="verse-nav-count">
+                        {navInfo.current} {t.verseCount} {navInfo.total}
+                      </span>
+                      <button
+                        className="verse-nav-btn"
+                        onClick={handleNext}
+                        disabled={!navInfo.hasNext}
+                        aria-label="Next verse"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : error ? (
+                <div className="modal-verse-error">
+                  <WifiOff size={20} />
+                  <span>{t.verseError}</span>
+                </div>
+              ) : null}
+
+              <button
+                className="modal-new-verse"
+                style={{ background: selectedAttribute.gradient }}
+                onClick={handleNewVerse}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <Loader size={16} className="spinner-icon" />
+                    {t.loading}
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw size={16} />
+                    {t.newVerse}
+                  </>
                 )}
-              </>
-            ) : error ? (
-              <div className="modal-verse-error">
-                <WifiOff size={20} />
-                <span>{t.verseError}</span>
-              </div>
-            ) : null}
+              </button>
 
-            <button
-              className="modal-new-verse"
-              style={{ background: selectedAttribute.gradient }}
-              onClick={handleNewVerse}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader size={16} className="spinner-icon" />
-                  {t.loading}
-                </>
-              ) : (
-                <>
-                  <RefreshCw size={16} />
-                  {t.newVerse}
-                </>
-              )}
-            </button>
-
-            <button
-              className="modal-close"
-              style={{ background: selectedAttribute.gradient }}
-              onClick={() => setSelectedAttribute(null)}
-            >
-              {lang === 'es' ? 'Amén' : 'Amen'}
-            </button>
+              <button
+                className="modal-close"
+                style={{ background: selectedAttribute.gradient }}
+                onClick={() => setSelectedAttribute(null)}
+              >
+                {lang === 'es' ? 'Amén' : 'Amen'}
+              </button>
+            </div>
           </div>
         </div>
       )}

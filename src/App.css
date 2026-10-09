@@ -1651,17 +1651,21 @@
   background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
   border: 2px solid;
   border-radius: 30px;
-  padding: 2.5rem 2rem;
   max-width: 420px;
   width: 100%;
-  text-align: center;
+  max-height: 90vh;
   overflow: hidden;
+  animation: modal-appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-scroll {
+  padding: 2.5rem 2rem;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   max-height: 90vh;
   overflow-y: auto;
-  animation: modal-appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes modal-appear {
