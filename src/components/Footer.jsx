@@ -1,4 +1,4 @@
-import { Crown, Heart } from 'lucide-react'
+import { Crown, Heart } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { useLang } from '../context/hooks'
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { BookHeart, CalendarHeart, MessageCircleHeart,
-         User, Heart, X, BookOpen, Book, Library, Search,
-         ChevronRight, Languages, LogOut, Share2 } from 'lucide-react'
+import { CalendarHeart, ChatCircle as MessageCircleHeart,
+         User, Heart, X, BookOpen, Book, Books as Library, MagnifyingGlass as Search,
+         CaretRight as ChevronRight, Translate as Languages, SignOut as LogOut, ShareNetwork as Share2 } from '@phosphor-icons/react'
 import { YMTLogo } from './YMTLogo'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth, useLang } from '../context/hooks'

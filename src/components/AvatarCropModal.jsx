@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Check, ZoomIn, Loader } from 'lucide-react'
+import { X, Check, MagnifyingGlassPlus as ZoomIn, SpinnerGap as Loader } from '@phosphor-icons/react'
 import { getCoverScale, getMaxPan, clamp, getSourceRect } from './avatarCropMath'
 
 const FRAME = 300

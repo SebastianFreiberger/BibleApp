@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Search, Heart, X, BookOpen, Sun, Moon, Sparkles } from 'lucide-react'
+import { ArrowLeft, MagnifyingGlass as Search, Heart, X, BookOpen, Sun, Moon, Sparkle as Sparkles } from '@phosphor-icons/react'
 import { useLang } from '../context'
 import { useTheme, useFavorites } from '../hooks'
 import { searchVerses } from '../services/bibleApi'

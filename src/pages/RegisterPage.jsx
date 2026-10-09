@@ -4,7 +4,7 @@ import { useAuth, useLang } from '../context'
 import { UI_TEXT } from '../data'
 import { isValidPhone } from '../services/validation'
 import { Turnstile } from '../components'
-import { BookHeart, Mail, Lock, User, UserPlus, AlertCircle, Phone, ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { Book as BookHeart, Envelope as Mail, Lock, User, UserPlus, WarningCircle as AlertCircle, Phone, ArrowLeft, Eye, EyeSlash as EyeOff } from '@phosphor-icons/react'
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY
 

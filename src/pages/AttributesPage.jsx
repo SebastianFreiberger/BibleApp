@@ -5,12 +5,12 @@ import { useAttributeVerse, useFavorites } from '../hooks'
 import { useLang } from '../context'
 import { Footer, ScrollToTop } from '../components'
 import {
-  ArrowLeft, Crown, Shield, Heart, Sparkles, Scale, Zap, Globe, Gift,
-  HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
-  Infinity as InfinityIcon, ThumbsUp, Users, KeyRound, Sun, Wheat, Home, Mountain,
-  BookOpen, Gem, Anchor, Star, RefreshCw, Sunrise, Cross, HandHeart,
-  ChevronLeft, ChevronRight, Loader, Share2, WifiOff
-} from 'lucide-react'
+  ArrowLeft, Crown, Shield, Heart, Sparkle as Sparkles, Scales as Scale, Lightning as Zap, Globe, Gift,
+  Heartbeat as HeartPulse, CloudSun, Clock, Eraser, ShieldCheck, Lightbulb, Palette,
+  Infinity as InfinityIcon, ThumbsUp, Users, Key as KeyRound, Sun, Grains as Wheat, House as Home, Mountains as Mountain,
+  BookOpen, Diamond as Gem, Anchor, Star, ArrowsClockwise as RefreshCw, SunHorizon as Sunrise, Cross, HandHeart,
+  CaretLeft as ChevronLeft, CaretRight as ChevronRight, SpinnerGap as Loader, ShareNetwork as Share2, WifiSlash as WifiOff
+} from '@phosphor-icons/react'
 
 const ICONS = {
   Shield, Heart, HandHeart, Sparkles, Scale, Zap, Globe, Gift, HeartPulse,
@@ -80,13 +80,6 @@ export function AttributesPage() {
 
   return (
     <div className="attributes-page">
-      <div className="attributes-bg-effects">
-        <div className="floating-orb orb-1"></div>
-        <div className="floating-orb orb-2"></div>
-        <div className="floating-orb orb-3"></div>
-        <div className="light-rays"></div>
-      </div>
-
       <header className="attributes-header">
         <Link to="/" className="back-btn">
           <ArrowLeft size={20} />

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
-  ArrowLeft, Heart, Flame, BarChart2, Globe, BookOpen,
-  CalendarDays, BookMarked, Sun, Moon, LogOut, Trash2,
-  User, Check, ChevronLeft, ChevronRight, Clock, Sparkles,
-  Pencil, Sliders, Share2, Eye, EyeOff, AlertTriangle, Camera
-} from 'lucide-react'
+  ArrowLeft, Heart, Flame, ChartBar as BarChart2, Globe, BookOpen,
+  Calendar as CalendarDays, BookBookmark as BookMarked, Sun, Moon, SignOut as LogOut, Trash as Trash2,
+  User, Check, CaretLeft as ChevronLeft, CaretRight as ChevronRight, Clock, Sparkle as Sparkles,
+  Pencil, Sliders, ShareNetwork as Share2, Eye, EyeSlash as EyeOff, Warning as AlertTriangle, Camera,
+  Cross, Leaf
+} from '@phosphor-icons/react'
 import { useAuth } from '../context'
 import { useLang } from '../context'
 import { useTheme, useFavorites, useStreak, useNewFavsCount } from '../hooks'
@@ -319,15 +320,15 @@ function CalendarSection({ streak, activeDates, lang, t }) {
 
 function PlansSection({ lang }) {
   const plans = lang === 'es' ? [
-    { title: 'Biblia en un año',       desc: '3-4 capítulos por día · 365 días',   icon: '📅' },
-    { title: 'Nuevo Testamento 90 días', desc: '3 capítulos por día · 90 días',    icon: '✝️' },
-    { title: 'Salmos y Proverbios',    desc: '1 capítulo diario · 31 días',         icon: '🌿' },
-    { title: 'Evangelios',             desc: 'Mateo, Marcos, Lucas, Juan · 60 días',icon: '📖' },
+    { title: 'Biblia en un año',       desc: '3-4 capítulos por día · 365 días',   icon: CalendarDays },
+    { title: 'Nuevo Testamento 90 días', desc: '3 capítulos por día · 90 días',    icon: Cross },
+    { title: 'Salmos y Proverbios',    desc: '1 capítulo diario · 31 días',         icon: Leaf },
+    { title: 'Evangelios',             desc: 'Mateo, Marcos, Lucas, Juan · 60 días',icon: BookOpen },
   ] : [
-    { title: 'Bible in a Year',        desc: '3-4 chapters per day · 365 days',    icon: '📅' },
-    { title: 'New Testament 90 days',  desc: '3 chapters per day · 90 days',       icon: '✝️' },
-    { title: 'Psalms & Proverbs',      desc: '1 chapter daily · 31 days',          icon: '🌿' },
-    { title: 'The Gospels',            desc: 'Matthew, Mark, Luke, John · 60 days',icon: '📖' },
+    { title: 'Bible in a Year',        desc: '3-4 chapters per day · 365 days',    icon: CalendarDays },
+    { title: 'New Testament 90 days',  desc: '3 chapters per day · 90 days',       icon: Cross },
+    { title: 'Psalms & Proverbs',      desc: '1 chapter daily · 31 days',          icon: Leaf },
+    { title: 'The Gospels',            desc: 'Matthew, Mark, Luke, John · 60 days',icon: BookOpen },
   ]
 
   return (
@@ -345,7 +346,7 @@ function PlansSection({ lang }) {
       <div className="ps-plans-grid">
         {plans.map((plan, i) => (
           <div key={i} className="ps-plan-card">
-            <span className="ps-plan-icon">{plan.icon}</span>
+            <span className="ps-plan-icon"><plan.icon size={20} /></span>
             <div className="ps-plan-info">
               <span className="ps-plan-title">{plan.title}</span>
               <span className="ps-plan-desc">{plan.desc}</span>
@@ -682,10 +683,6 @@ export function ProfilePage() {
 
   return (
     <div className="profile-page">
-      <div className="pp-orb pp-orb-1" />
-      <div className="pp-orb pp-orb-2" />
-      <div className="pp-orb pp-orb-3" />
-
       {/* ── Top bar ───────────────────────────────── */}
       <nav className="bible-topbar">
         <div className="bible-topbar-left">

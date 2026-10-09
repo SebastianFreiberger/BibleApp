@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight, Heart, Loader, Sun, Moon } from 'lucide-react'
+import { ArrowLeft, BookOpen, CaretLeft as ChevronLeft, CaretRight as ChevronRight, Heart, SpinnerGap as Loader, MagnifyingGlass as Search, Sun, Moon } from '@phosphor-icons/react'
 import { useLang } from '../context'
 import { useTheme, useFavorites } from '../hooks'
 import { UI_TEXT, BOOK_LIST } from '../data'
 import { fetchChapter } from '../services/bibleApi'
-import { VersionSelector, Footer, ScrollToTop } from '../components'
-import { SearchTab } from '../components/Header'
+import { VersionSelector, Footer, ScrollToTop, BibleShelf } from '../components'
+
+const normalize = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
 
 export function BiblePage() {
   const { lang, bibleVersion } = useLang()
@@ -20,6 +21,14 @@ export function BiblePage() {
   const [verses, setVerses] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [bookQuery, setBookQuery] = useState('')
+
+  const matchedBook = useMemo(() => {
+    const q = normalize(bookQuery.trim())
+    if (!q) return null
+    const name = (book) => normalize(lang === 'es' ? book.es : book.en)
+    return BOOK_LIST.find(b => name(b).startsWith(q)) ?? BOOK_LIST.find(b => name(b).includes(q)) ?? null
+  }, [bookQuery, lang])
 
   useEffect(() => {
     if (view !== 'reading' || !selectedBook) return
@@ -41,6 +50,12 @@ export function BiblePage() {
     setSelectedBook(book)
     setSelectedChapter(1)
     setView('chapters')
+    setBookQuery('')
+  }
+
+  const handleBookSearchKeyDown = (e) => {
+    if (e.key === 'Enter' && matchedBook) handleSelectBook(matchedBook)
+    if (e.key === 'Escape') setBookQuery('')
   }
 
   const handleSelectChapter = (ch) => {
@@ -90,9 +105,6 @@ export function BiblePage() {
   }
 
   const bookName = (book) => lang === 'es' ? book.es : book.en
-
-  const otBooks = BOOK_LIST.filter(b => b.testament === 'OT')
-  const ntBooks = BOOK_LIST.filter(b => b.testament === 'NT')
 
   return (
     <div className="bible-page">
@@ -160,55 +172,32 @@ export function BiblePage() {
               <h1>{t.bibleTitle}</h1>
               <p>{t.bibleSubtitle}</p>
               <div className="bible-search-bar">
-                <SearchTab t={t} />
+                <div className={'search-tab-wrap expanded' + (matchedBook ? ' bs-finder-match' : '')}>
+                  <Search size={15} className="search-tab-icon" />
+                  <input
+                    className="search-tab-input"
+                    value={bookQuery}
+                    onChange={e => setBookQuery(e.target.value)}
+                    onKeyDown={handleBookSearchKeyDown}
+                    placeholder={lang === 'es' ? 'Buscar un libro…' : 'Find a book…'}
+                  />
+                  {matchedBook && (
+                    <span className="bs-finder-hint">
+                      {bookName(matchedBook)} ↵
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
-            <section className="bible-testament-section">
-              <h2 className="bible-testament-title">
-                <span className="testament-badge ot">{t.oldTestament}</span>
-                <span className="testament-count">39 {lang === 'es' ? 'libros' : 'books'}</span>
-              </h2>
-              <div className="bible-book-grid">
-                {otBooks.map(book => (
-                  <button
-                    key={book.key}
-                    className="bible-book-card"
-                    onClick={() => handleSelectBook(book)}
-                  >
-                    <span className="book-name">{bookName(book)}</span>
-                    <span className="book-chapters">
-                      {book.chapters} {book.chapters === 1
-                        ? (lang === 'es' ? 'capítulo' : 'chapter')
-                        : t.chaptersCount}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <section className="bible-testament-section">
-              <h2 className="bible-testament-title">
-                <span className="testament-badge nt">{t.newTestament}</span>
-                <span className="testament-count">27 {lang === 'es' ? 'libros' : 'books'}</span>
-              </h2>
-              <div className="bible-book-grid">
-                {ntBooks.map(book => (
-                  <button
-                    key={book.key}
-                    className="bible-book-card"
-                    onClick={() => handleSelectBook(book)}
-                  >
-                    <span className="book-name">{bookName(book)}</span>
-                    <span className="book-chapters">
-                      {book.chapters} {book.chapters === 1
-                        ? (lang === 'es' ? 'capítulo' : 'chapter')
-                        : t.chaptersCount}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </section>
+            <BibleShelf
+              books={BOOK_LIST}
+              lang={lang}
+              otLabel={t.oldTestament}
+              ntLabel={t.newTestament}
+              onSelect={handleSelectBook}
+              highlightKey={matchedBook?.key ?? null}
+            />
           </div>
         )}
 

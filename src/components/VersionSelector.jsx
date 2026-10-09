@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { BookOpen, ChevronDown, Check } from 'lucide-react'
+import { BookOpen, CaretDown as ChevronDown, Check } from '@phosphor-icons/react'
 import { useLang } from '../context/hooks'
 import { BIBLE_VERSIONS } from '../data/bibleData'
 

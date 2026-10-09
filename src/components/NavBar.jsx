@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Users, HeartHandshake, BookOpen, Menu, X } from 'lucide-react'
+import { House as Home, Users, Handshake as HeartHandshake, BookOpen, List as Menu, X } from '@phosphor-icons/react'
 
 const NAV_ITEMS = {
   es: [

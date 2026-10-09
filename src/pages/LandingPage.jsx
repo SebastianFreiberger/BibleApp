@@ -6,10 +6,10 @@ import { fetchVerse } from '../services/bibleApi'
 import { Footer } from '../components'
 import { YMTLogo } from '../components/YMTLogo'
 import {
-  CalendarHeart, MessageCircleHeart, Library, Crown,
+  CalendarHeart, ChatCircle as MessageCircleHeart, Books as Library, Crown,
   BookOpen, Heart, Star, ArrowRight, ArrowUp,
-  UserPlus, ChevronDown, BookMarked, Flame, Share2
-} from 'lucide-react'
+  UserPlus, CaretDown as ChevronDown, BookBookmark as BookMarked, Flame, ShareNetwork as Share2
+} from '@phosphor-icons/react'
 
 const DAILY_REF_ES = 'Isaias:33:2'
 const DAILY_REF_EN = 'Isaiah:33:2'
@@ -183,11 +183,6 @@ export function LandingPage() {
 
       {/* ── Hero ── */}
       <section className="landing-hero">
-        <div className="landing-hero-bg">
-          <div className="landing-orb landing-orb-1" />
-          <div className="landing-orb landing-orb-2" />
-          <div className="landing-orb landing-orb-3" />
-        </div>
         <div className="landing-hero-content">
           <YMTLogo size={90} showTagline className="landing-hero-logo" />
           <h1 className="landing-hero-title">

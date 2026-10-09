@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Crown, Sparkles } from 'lucide-react'
+import { Crown, Sparkle as Sparkles } from '@phosphor-icons/react'
 import { useLang } from '../context/hooks'
 
 export function GodAttributeCard({ attribute, t }) {

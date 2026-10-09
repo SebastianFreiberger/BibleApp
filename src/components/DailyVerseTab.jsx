@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Sparkles, CalendarHeart, Shuffle, ArrowLeft, Loader, Heart, Share2, MessageCircle, Twitter, Facebook, Copy, Check, RefreshCw, WifiOff } from 'lucide-react'
+import { Sparkle as Sparkles, CalendarHeart, Shuffle, ArrowLeft, SpinnerGap as Loader, Heart, ShareNetwork as Share2, WhatsappLogo as MessageCircle, TwitterLogo as Twitter, FacebookLogo as Facebook, Copy, Check, ArrowsClockwise as RefreshCw, WifiSlash as WifiOff } from '@phosphor-icons/react'
 import { GodAttributeCard } from './GodAttributeCard'
 
 export function DailyVerseTab({

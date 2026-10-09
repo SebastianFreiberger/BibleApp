@@ -1,11 +1,11 @@
 import {
-  Frown,
+  SmileySad as Frown,
   Brain,
-  ShieldAlert,
+  ShieldWarning as ShieldAlert,
   HandHeart,
-  Sunrise,
+  SunHorizon as Sunrise,
   Cross,
-  Dumbbell,
+  Barbell as Dumbbell,
   Heart,
   Feather,
   Compass,
@@ -16,9 +16,9 @@ import {
   Users,
   Fingerprint,
   Target,
-  HeartHandshake,
-  AlertCircle
-} from 'lucide-react'
+  Handshake as HeartHandshake,
+  WarningCircle as AlertCircle
+} from '@phosphor-icons/react'
 
 // Iconos para cada estado de ánimo
 export const MOOD_ICONS = {

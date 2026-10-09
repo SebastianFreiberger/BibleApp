@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, ShieldCheck } from '@phosphor-icons/react'
 import { useLang } from '../context'
 import { PRIVACY_POLICY } from '../data/privacyPolicy'
 

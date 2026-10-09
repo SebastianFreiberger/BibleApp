@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth, useLang } from '../context'
 import { UI_TEXT } from '../data'
 import {
-  BookHeart, Mail, Lock, LogIn, AlertCircle, ArrowLeft,
-  Eye, EyeOff, CheckCircle2
-} from 'lucide-react'
+  Book as BookHeart, Envelope as Mail, Lock, SignIn as LogIn, WarningCircle as AlertCircle, ArrowLeft,
+  Eye, EyeSlash as EyeOff, CheckCircle as CheckCircle2
+} from '@phosphor-icons/react'
 
 // ── Flujo recuperación de contraseña ───────────────────
 export function ForgotPassword({ t, sendPasswordReset, onBack }) {

@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(npm run dev:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(Get-Content \"C:\\\\Users\\\\seba_\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--xampp-htdocs-BibleApp\\\\29a1e7af-5037-4480-8850-8e781ab800ca\\\\tasks\\\\byjk5qprn.output\" -Wait)",
+      "Bash(Select-String -Pattern \"Local:|Error|error|EADDRINUSE|ready\")",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(Start-Sleep -Seconds 4)",
+      "Bash(Get-Content \"C:\\\\Users\\\\seba_\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--xampp-htdocs-BibleApp\\\\72fba3e8-b68f-422a-a7a6-947453938d22\\\\tasks\\\\bp889r2cb.output\" -Tail 20)",
+      "Bash(node -e \"require\\('playwright'\\)\")",
+      "Bash(node *)",
+      "WebSearch",
+      "Bash(git *)"
     ]
   }
 }

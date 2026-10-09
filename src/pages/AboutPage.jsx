@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 import { Layout } from '../components'
-import { Heart, BookOpen, Users, Sparkles, Target, Globe } from 'lucide-react'
+import { Heart, BookOpen, Users, Sparkle as Sparkles, Target, Globe } from '@phosphor-icons/react'
 
 const CONTENT = {
   es: {

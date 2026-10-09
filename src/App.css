@@ -1469,96 +1469,6 @@
   min-height: 100vh;
   padding: 2rem;
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
-}
-
-.attributes-bg-effects {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.floating-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.5;
-  animation: float-orb 20s ease-in-out infinite;
-}
-
-.orb-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #fbbf24 0%, transparent 70%);
-  top: -100px;
-  right: -100px;
-  animation-delay: 0s;
-}
-
-.orb-2 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
-  bottom: -50px;
-  left: -50px;
-  animation-delay: -7s;
-}
-
-.orb-3 {
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, #ec4899 0%, transparent 70%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation-delay: -14s;
-}
-
-@keyframes float-orb {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -30px) scale(1.1); }
-  50% { transform: translate(-20px, 20px) scale(0.9); }
-  75% { transform: translate(20px, 30px) scale(1.05); }
-}
-
-.light-rays {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200%;
-  height: 100%;
-  background: conic-gradient(
-    from 90deg at 50% 0%,
-    transparent 0deg,
-    rgba(251, 191, 36, 0.00) 20deg,
-    rgba(251, 191, 36, 0.04) 45deg,
-    rgba(251, 191, 36, 0.00) 70deg,
-    transparent 90deg,
-    rgba(251, 191, 36, 0.00) 110deg,
-    rgba(251, 191, 36, 0.03) 135deg,
-    rgba(251, 191, 36, 0.00) 160deg,
-    transparent 180deg,
-    rgba(251, 191, 36, 0.00) 200deg,
-    rgba(251, 191, 36, 0.04) 225deg,
-    rgba(251, 191, 36, 0.00) 250deg,
-    transparent 270deg,
-    rgba(251, 191, 36, 0.00) 290deg,
-    rgba(251, 191, 36, 0.03) 315deg,
-    rgba(251, 191, 36, 0.00) 340deg,
-    transparent 360deg
-  );
-  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, black 30%, transparent 100%);
-  mask-image: radial-gradient(ellipse 70% 80% at 50% 0%, black 30%, transparent 100%);
-  filter: blur(6px);
-  animation: rotate-rays 60s linear infinite;
-}
-
-@keyframes rotate-rays {
-  from { transform: translateX(-50%) rotate(0deg); }
-  to { transform: translateX(-50%) rotate(360deg); }
 }
 
 .attributes-header {
@@ -1981,26 +1891,6 @@
 .modal-new-verse:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Light theme for attributes page */
-[data-theme="light"] .attributes-page {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #eff6ff 100%);
-}
-
-[data-theme="light"] .floating-orb {
-  opacity: 0.3;
-}
-
-[data-theme="light"] .light-rays {
-  background: conic-gradient(
-    from 90deg at 50% 0%,
-    transparent 0deg,
-    rgba(59, 130, 246, 0.05) 30deg,
-    transparent 60deg,
-    rgba(59, 130, 246, 0.08) 90deg,
-    transparent 120deg
-  );
 }
 
 [data-theme="light"] .back-btn {
@@ -3168,7 +3058,6 @@
   justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #0d0b1e 0%, #1a1a2e 50%, #24243e 100%);
 }
 
 .auth-container {
@@ -3267,7 +3156,6 @@
   justify-content: center;
   padding: 2rem;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #0d0b1e 0%, #1a1a2e 50%, #24243e 100%);
 }
 
 .legal-container {
@@ -3674,7 +3562,6 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-main, #f0f2ff);
 }
 
 /* ── Top navigation bar ─────────────────── */
@@ -3762,10 +3649,10 @@
 /* ── Main content area ──────────────────── */
 .bible-main {
   flex: 1;
-  max-width: 960px;
+  max-width: 1800px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2rem clamp(1.5rem, 4vw, 4rem);
 }
 
 /* ── Page header ────────────────────────── */
@@ -3806,80 +3693,177 @@
   margin: 0;
 }
 
-/* ── Testament sections ─────────────────── */
-.bible-testament-section {
-  margin-bottom: 2.5rem;
+/* ── Bible shelf (vista biblioteca) ──────── */
+.bs-root {
+  --bs-serif: 'Fraunces', Georgia, serif;
+  --bs-sans: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
+  --bs-text: #333;
+  --bs-muted: #999;
+  --bs-line: rgba(102, 126, 234, 0.18);
+  --bs-plank-from: #d9c9a7;
+  --bs-plank-to: #b89b69;
+  --bs-plank-shadow: rgba(0, 0, 0, 0.18);
+  --bs-spine-shadow: rgba(0, 0, 0, 0.22);
+  --bs-ring: rgba(102, 126, 234, 0.6);
+  font-family: var(--bs-sans);
 }
 
-.bible-testament-title {
+/* ── Book finder (buscador de libros) ────── */
+.bs-finder-match {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.18);
+}
+.bs-finder-match .search-tab-icon { stroke: #667eea; }
+.bs-finder-hint {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #667eea;
+}
+[data-theme="dark"] .bs-finder-match {
+  background: rgba(167, 139, 250, 0.14);
+  color: #a78bfa;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.22);
+}
+[data-theme="dark"] .bs-finder-match .search-tab-icon { stroke: #a78bfa; }
+[data-theme="dark"] .bs-finder-hint { color: #a78bfa; }
+
+.bs-hint {
+  margin: 0 0 1.75rem;
+  font-size: 0.82rem;
+  color: var(--bs-muted);
+}
+
+.bs-shelf-section { margin-bottom: 2.5rem; }
+
+.bs-shelf-head {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
 }
 
-.testament-badge {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.bs-shelf-title { display: flex; align-items: baseline; gap: 0.75rem; }
+
+.bs-shelf-title h2 {
+  margin: 0;
+  font-family: var(--bs-serif);
+  font-weight: 300;
+  font-size: 1.6rem;
+  color: var(--bs-text);
+}
+
+.bs-shelf-title span {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  color: var(--bs-muted);
 }
 
-.testament-badge.ot {
-  background: linear-gradient(135deg, #fde68a, #f59e0b);
-  color: #78350f;
-}
+.bs-arrows { display: flex; gap: 0.5rem; }
 
-.testament-badge.nt {
-  background: linear-gradient(135deg, #a5b4fc, #667eea);
-  color: #fff;
-}
-
-.testament-count {
-  font-size: 0.82rem;
-  color: #aaa;
-  font-weight: 400;
-}
-
-/* ── Book grid ──────────────────────────── */
-.bible-book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.6rem;
-}
-
-.bible-book-card {
+.bs-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1.5px solid var(--bs-line);
   background: #fff;
-  border: 1.5px solid rgba(102, 126, 234, 0.15);
-  border-radius: 12px;
-  padding: 0.75rem 0.8rem;
+  color: #667eea;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  text-align: left;
   transition: all 0.18s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
 }
 
-.bible-book-card:hover {
+.bs-arrow:hover {
   border-color: #667eea;
-  background: rgba(102, 126, 234, 0.06);
-  transform: translateY(-2px);
   box-shadow: 0 4px 14px rgba(102, 126, 234, 0.15);
 }
 
-.book-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #333;
-  line-height: 1.2;
+.bs-shelfwrap { position: relative; }
+
+.bs-shelf {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 1.25rem 0.1rem 0;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.bs-shelf > * { scroll-snap-align: start; flex-shrink: 0; }
+
+.bs-plank {
+  height: 12px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--bs-plank-from), var(--bs-plank-to));
+  box-shadow: 0 8px 18px var(--bs-plank-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.bs-plank-shadow {
+  height: 20px;
+  background: linear-gradient(180deg, var(--bs-plank-shadow), transparent);
 }
 
-.book-chapters {
-  font-size: 0.72rem;
-  color: #aaa;
+.bs-spine {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 12px 0 14px;
+  min-width: 44px;
+  border: 0;
+  border-radius: 5px 5px 2px 2px;
+  color: #231f10;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.bs-spine::after {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 4px; height: 1px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.bs-spine:hover,
+.bs-spine:focus-visible {
+  transform: translateY(-10px) rotate(-2deg);
+  box-shadow: 0 14px 24px var(--bs-spine-shadow);
+  outline: none;
+}
+.bs-spine-active {
+  animation: bs-pop 0.5s ease;
+  transform: translateY(-10px) rotate(-2deg);
+  box-shadow: 0 14px 24px var(--bs-spine-shadow), 0 0 0 3px var(--bs-ring);
+}
+@keyframes bs-pop {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  45% { transform: translateY(-18px) rotate(-3deg) scale(1.08); }
+  100% { transform: translateY(-10px) rotate(-2deg) scale(1); }
+}
+.bs-spine-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--bs-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.bs-spine-count {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.65;
+  margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .bs-shelf-title h2 { font-size: 1.3rem; }
+  .bs-arrows { display: none; }
 }
 
 /* ── Chapter grid ───────────────────────── */
@@ -4193,10 +4177,6 @@
    DARK MODE — BIBLE PAGE
    ════════════════════════════════════════════ */
 
-[data-theme="dark"] .bible-page {
-  background: #0f0e1a;
-}
-
 [data-theme="dark"] .bible-topbar {
   background: rgba(26, 24, 46, 0.9);
   border-bottom-color: rgba(167, 139, 250, 0.15);
@@ -4240,19 +4220,26 @@
 [data-theme="dark"] .bible-page-header h2 { color: #e2e8f0; }
 [data-theme="dark"] .bible-page-header p  { color: #9ca3af; }
 
-[data-theme="dark"] .bible-book-card {
+[data-theme="dark"] .bs-root {
+  --bs-text: #e2e8f0;
+  --bs-muted: #6b7280;
+  --bs-line: rgba(167, 139, 250, 0.25);
+  --bs-plank-from: #2a2740;
+  --bs-plank-to: #1a1828;
+  --bs-plank-shadow: rgba(0, 0, 0, 0.5);
+  --bs-spine-shadow: rgba(0, 0, 0, 0.55);
+  --bs-ring: rgba(167, 139, 250, 0.65);
+}
+
+[data-theme="dark"] .bs-arrow {
   background: #1e1b38;
-  border-color: rgba(167, 139, 250, 0.2);
+  color: #a78bfa;
 }
 
-[data-theme="dark"] .bible-book-card:hover {
-  background: rgba(167, 139, 250, 0.12);
+[data-theme="dark"] .bs-arrow:hover {
   border-color: #a78bfa;
-  box-shadow: 0 4px 14px rgba(167, 139, 250, 0.2);
+  box-shadow: 0 4px 14px rgba(167, 139, 250, 0.25);
 }
-
-[data-theme="dark"] .book-name  { color: #e2e8f0; }
-[data-theme="dark"] .book-chapters { color: #6b7280; }
 
 [data-theme="dark"] .bible-chapter-btn {
   background: #1e1b38;
@@ -4308,27 +4295,8 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(145deg, #eef0ff 0%, #f5f0ff 50%, #edf5ff 100%);
   overflow: hidden;
   position: relative;
-}
-
-/* ── Floating orbs ──────────────────────── */
-.pp-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(75px);
-  pointer-events: none;
-  z-index: 0;
-  animation: ppOrbFloat 10s ease-in-out infinite;
-}
-.pp-orb-1 { width: 380px; height: 380px; background: rgba(167,139,250,0.28); top: -100px; left: -100px; animation-delay: 0s; }
-.pp-orb-2 { width: 280px; height: 280px; background: rgba(147,197,253,0.22); bottom: 5%; right: -60px; animation-delay: -3.5s; }
-.pp-orb-3 { width: 240px; height: 240px; background: rgba(251,207,232,0.28); top: 40%; left: 38%; animation-delay: -6s; }
-@keyframes ppOrbFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(14px, -22px) scale(1.06); }
-  66%       { transform: translate(-10px, 12px) scale(0.96); }
 }
 
 /* ── Logout button ──────────────────────── */
@@ -4859,7 +4827,14 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   opacity: 0.7;
 }
-.ps-plan-icon { font-size: 1.4rem; flex-shrink: 0; }
+.ps-plan-icon {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
 .ps-plan-info { display: flex; flex-direction: column; gap: 0.1rem; flex: 1; }
 .ps-plan-title{ font-size: 0.88rem; font-weight: 600; color: #333; }
 .ps-plan-desc { font-size: 0.75rem; color: #aaa; }
@@ -4878,12 +4853,6 @@
    DARK MODE — PROFILE PAGE
    ════════════════════════════════════════════ */
 
-[data-theme="dark"] .profile-page {
-  background: linear-gradient(145deg, #0d0c1a 0%, #11102a 50%, #0d1220 100%);
-}
-[data-theme="dark"] .pp-orb-1 { background: rgba(139,92,246,0.18); }
-[data-theme="dark"] .pp-orb-2 { background: rgba(59,130,246,0.13); }
-[data-theme="dark"] .pp-orb-3 { background: rgba(236,72,153,0.1); }
 [data-theme="dark"] .profile-page .bible-topbar {
   background: rgba(13,12,26,0.8);
   border-bottom-color: rgba(167,139,250,0.12);
@@ -4953,6 +4922,7 @@
 
 [data-theme="dark"] .ps-plan-card { background: #1e1b38; }
 [data-theme="dark"] .ps-plan-title{ color: #9ca3af; }
+[data-theme="dark"] .ps-plan-icon { color: #a78bfa; background: rgba(167, 139, 250, 0.14); }
 [data-theme="dark"] .ps-plans-coming { background: rgba(245,158,11,0.06); }
 
 /* ── Profile Page — Responsive mobile ──────────────── */
@@ -5315,16 +5285,6 @@
   overflow: hidden;
   text-align: center;
 }
-.landing-hero-bg { position: absolute; inset: 0; pointer-events: none; }
-.landing-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(80px); opacity: 0.35;
-  animation: float-orb 18s ease-in-out infinite;
-}
-.landing-orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #667eea, transparent 70%); top: -120px; right: -100px; }
-.landing-orb-2 { width: 380px; height: 380px; background: radial-gradient(circle, #a855f7, transparent 70%); bottom: -80px; left: -80px; animation-delay: -6s; }
-.landing-orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, #ec4899, transparent 70%); top: 40%; left: 55%; animation-delay: -12s; }
-
 .landing-hero-content {
   position: relative; z-index: 2;
   display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
@@ -5788,9 +5748,6 @@
 [data-theme="light"] .landing-preview-text { color: #667eea; }
 [data-theme="light"] .landing-section-title { color: #1e1b38; }
 [data-theme="light"] .landing-cta-box h2 { color: #1e1b38; }
-[data-theme="light"] .landing-orb-1 { opacity: 0.12; }
-[data-theme="light"] .landing-orb-2 { opacity: 0.1; }
-[data-theme="light"] .landing-orb-3 { opacity: 0.08; }
 
 /* ── Polaroids ── */
 .landing-polaroids {

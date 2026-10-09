@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Crown, ArrowUp } from 'lucide-react'
+import { Crown, ArrowUp } from '@phosphor-icons/react'
 import { useLang } from '../context/hooks'
 
 export function ScrollToTop() {

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 import { useLang } from '../context'
 import { UI_TEXT } from '../data'
-import { BookHeart, Lock, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react'
+import { Book as BookHeart, Lock, WarningCircle as AlertCircle, CheckCircle as CheckCircle2, Eye, EyeSlash as EyeOff } from '@phosphor-icons/react'
 
 export function ResetPasswordPage() {
   const { lang } = useLang()

@@ -1,4 +1,4 @@
-import { Search, Loader, ChevronDown, ChevronRight, Heart, Share2, ShieldCheck } from 'lucide-react'
+import { MagnifyingGlass as Search, SpinnerGap as Loader, CaretDown as ChevronDown, CaretRight as ChevronRight, Heart, ShareNetwork as Share2, ShieldCheck } from '@phosphor-icons/react'
 import { MOOD_ICONS, MOOD_REFERENCES } from '../data'
 
 export function MoodSearchTab({
